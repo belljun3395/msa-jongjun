@@ -1,0 +1,5 @@
+rootProject.name = 'msa-jongjun'
+
+include 'auth'
+include 'zuul'
+include 'eureka-server'
