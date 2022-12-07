@@ -1,0 +1,33 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.0.RELEASE'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+
+dependencies {
+    implementation 'org.springframework.retry:spring-retry:1.2.2.RELEASE'  // spring cloud requires spring-retry for auto-retry
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:2.1.5.RELEASE'  // To use Feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:2.1.6.RELEASE'
+    // 3. To use Eureka client
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-ribbon:2.1.6.RELEASE'  // 2. To use ribbon
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix:2.1.6.RELEASE'
+    // 1. To use spring-cloud-hystrix
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.1.18.RELEASE'
+}
