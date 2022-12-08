@@ -8,7 +8,7 @@ server:
 zuul:
   routes:
     auth:
-      path: /auths/**
+      path: /members/**
       serviceId: auth #eureka에 등록된 Id를 말한다.
       stripPrefix: false
 
