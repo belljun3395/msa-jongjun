@@ -3,6 +3,7 @@ package com.example.service.member;
 import com.example.domain.member.Member;
 import com.example.domain.member.MemberRepository;
 import com.example.domain.member.Role;
+import com.example.web.dto.MemberJoinDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,10 +37,13 @@ public class MemberServiceImplTest {
     @Test
     public void join() {
         //given
-        Member member = new Member("김종준", "jong3395@gmail.com", "1234", Role.MEMBER);
+        MemberJoinDTO memberJoinDTO = new MemberJoinDTO();
+        memberJoinDTO.setEmail("jun3395@gmail.com");
+        memberJoinDTO.setName("김종준");
+        memberJoinDTO.setPassword("1234");
 
         //when
-        memberService.join(member);
+        memberService.join(memberJoinDTO);
         Member repositoryMember = memberRepository.findById(member.getId())
                 .get();
 
