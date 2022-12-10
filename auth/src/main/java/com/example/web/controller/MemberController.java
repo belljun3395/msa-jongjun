@@ -25,12 +25,13 @@ public class MemberController {
     @PostMapping("/join")
     public ResponseEntity<Response<Object>> join(@Validated MemberJoinDTO memberJoinDTO) {
 
-        memberService.join(memberJoinDTO.convertToMember());
+        memberService.join(memberJoinDTO);
 
         Response<Object> success_join = makeResponse(HttpStatus.CREATED.value(), SUCCESS_JOIN);
 
         return new ResponseEntity<Response<Object>>(success_join, HttpStatus.OK);
     }
+
 
     private static Response<Object> makeResponse(Integer status, String message) {
         Response<Object> success_join = Response.builder()
