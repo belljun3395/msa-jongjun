@@ -24,7 +24,7 @@ public class MemberController {
     public ResponseEntity<ApiResponse<Null>> join(WebRequest request, @Validated MemberJoinDTO memberJoinDTO) {
         return new ResponseEntity<>(memberService.join(memberJoinDTO)
                 .setPath(request),
-                HttpStatus.OK);
+                HttpStatus.NO_CONTENT);
     }
 
 }
