@@ -4,6 +4,7 @@ import com.example.domain.member.Member;
 import com.example.domain.member.MemberRepository;
 import com.example.domain.member.Role;
 import com.example.web.dto.MemberJoinDTO;
+import com.example.web.exception.MemberValidateException;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,7 +92,7 @@ public class MemberServiceImplTest {
                 .get();
 
         //then
-        Assertions.assertThatIllegalStateException()
+        Assertions.assertThatExceptionOfType(MemberValidateException.class)
                 .isThrownBy(() -> memberService.adjustRole(adminMember, Role.ADMIN));
     }
 
