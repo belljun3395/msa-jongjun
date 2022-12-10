@@ -30,10 +30,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void join(MemberJoinDTO memberJoinDTO) {
-        encodePassword(memberJoinDTO);
-        Member member = memberJoinDTO.convertToMember();
+        Member member = convertToMember(memberJoinDTO);
         validateDuplicateMember(member);
         memberRepository.save(member);
+    }
+
+    private Member convertToMember(MemberJoinDTO memberJoinDTO) {
+        encodePassword(memberJoinDTO);
+        Member member = memberJoinDTO.convertToMember();
+        return member;
     }
 
     private void encodePassword(MemberJoinDTO memberJoinDTO) {
@@ -51,9 +56,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void adjustRole(Member member, Role role) {
-        Member memberVisitor = getMember(member, role);
-        Member adminMember = new Member(memberVisitor, role);
-        memberRepository.save(adminMember);
+        Member unAdjustedRoleMember = getMember(member, role);
+        Member adjustedRoleMember = new Member(unAdjustedRoleMember, role);
+        memberRepository.save(adjustedRoleMember);
     }
 
     private Member getMember(Member member, Role role) {
