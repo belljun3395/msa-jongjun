@@ -4,6 +4,8 @@ import com.example.domain.member.Role;
 import com.example.domain.member.Member;
 import com.example.domain.member.MemberRepository;
 import com.example.web.dto.MemberJoinDTO;
+import com.example.web.exception.MemberValidateError;
+import com.example.web.exception.MemberValidateException;
 import com.example.web.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,19 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.constraints.Null;
 import java.util.Optional;
 
+import static com.example.web.exception.MemberValidateError.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService {
 
-    private static final String ERROR = "[ERROR] ";
-    private static final String ERROR_EXIST_MEMBER = ERROR + "there are already our member";
-    private static final String ERROR_NO_EXIST_MEMBER = ERROR + "there are no exist member information";
-    private static final String ERROR_ALREADY_ADMIN = ERROR + "this member is already admin";
-    private static final String ERROR_ALREADY_MEMBER = ERROR + "this member is already member";
-
     private static final String JOIN_SUCCESS = "join success!";
-
 
     private final MemberRepository memberRepository;
 
@@ -55,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
     private void validateDuplicateMember(Member member) {
         Optional<Member> memberByEmail = memberRepository.findMemberByEmail(member.getEmail());
         if (memberByEmail.isPresent()) {
-            throw new IllegalStateException(ERROR_EXIST_MEMBER);
+            throw new MemberValidateException(EXIST_MEMBER);
         }
     }
 
@@ -70,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
     private Member getMember(Member member, Role role) {
         Optional<Member> byId = memberRepository.findById(member.getId());
         if (byId.isEmpty()) {
-            throw new IllegalStateException(ERROR_NO_EXIST_MEMBER);
+            throw new MemberValidateException(NO_EXIST_MEMBER);
         }
         Member byIdMember = byId.get();
         checkAdmin(role, byIdMember);
@@ -82,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
         if (role.equals(Role.ADMIN)) {
             if (byIdMember.getRole()
                     .isAdmin()) {
-                throw new IllegalStateException(ERROR_ALREADY_ADMIN);
+                throw new MemberValidateException(ALREADY_ADMIN);
             }
         }
     }
@@ -91,7 +88,7 @@ public class MemberServiceImpl implements MemberService {
         if (role.equals(Role.MEMBER)) {
             if (byIdMember.getRole()
                     .isMember()) {
-                throw new IllegalStateException(ERROR_ALREADY_MEMBER);
+                throw new MemberValidateException(ALREADY_MEMBER);
             }
         }
     }
