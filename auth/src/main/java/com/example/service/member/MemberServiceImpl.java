@@ -25,6 +25,8 @@ public class MemberServiceImpl implements MemberService {
     private static final String ERROR_ALREADY_ADMIN = ERROR + "this member is already admin";
     private static final String ERROR_ALREADY_MEMBER = ERROR + "this member is already member";
 
+    private static final String JOIN_SUCCESS = "join success!";
+
 
     private final MemberRepository memberRepository;
 
@@ -36,7 +38,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = convertToMember(memberJoinDTO);
         validateDuplicateMember(member);
         memberRepository.save(member);
-        return new ApiResponse<>(HttpStatus.CREATED.value(), "join success");
+        return new ApiResponse<>(HttpStatus.CREATED.value(), JOIN_SUCCESS);
     }
 
     private Member convertToMember(MemberJoinDTO memberJoinDTO) {
