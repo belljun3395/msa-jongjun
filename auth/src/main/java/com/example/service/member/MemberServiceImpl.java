@@ -26,11 +26,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void join(Member member) {
-        vaildateDuplicateMember(member);
+        validateDuplicateMember(member);
         memberRepository.save(member);
     }
 
-    private void vaildateDuplicateMember(Member member) {
+    private void validateDuplicateMember(Member member) {
         Optional<Member> memberByEmail = memberRepository.findMemberByEmail(member.getEmail());
         if (memberByEmail.isPresent()) {
             throw new IllegalStateException(ERROR_EXIST_MEMBER);
