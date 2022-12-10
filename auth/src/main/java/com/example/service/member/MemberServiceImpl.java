@@ -4,11 +4,14 @@ import com.example.domain.member.Role;
 import com.example.domain.member.Member;
 import com.example.domain.member.MemberRepository;
 import com.example.web.dto.MemberJoinDTO;
+import com.example.web.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Null;
 import java.util.Optional;
 
 @Service
@@ -29,10 +32,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void join(MemberJoinDTO memberJoinDTO) {
+    public ApiResponse<Null> join(MemberJoinDTO memberJoinDTO) {
         Member member = convertToMember(memberJoinDTO);
         validateDuplicateMember(member);
         memberRepository.save(member);
+        return new ApiResponse<>(HttpStatus.CREATED.value(), "join success");
     }
 
     private Member convertToMember(MemberJoinDTO memberJoinDTO) {
