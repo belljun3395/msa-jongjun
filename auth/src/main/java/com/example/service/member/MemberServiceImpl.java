@@ -3,7 +3,9 @@ package com.example.service.member;
 import com.example.domain.member.Role;
 import com.example.domain.member.Member;
 import com.example.domain.member.MemberRepository;
+import com.example.web.dto.MemberJoinDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +25,20 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     @Transactional
-    public void join(Member member) {
+    public void join(MemberJoinDTO memberJoinDTO) {
+        encodePassword(memberJoinDTO);
+        Member member = memberJoinDTO.convertToMember();
         validateDuplicateMember(member);
         memberRepository.save(member);
+    }
+
+    private void encodePassword(MemberJoinDTO memberJoinDTO) {
+        String encodedPassword = passwordEncoder.encode(memberJoinDTO.getPassword());
+        memberJoinDTO.setPassword(encodedPassword);
     }
 
     private void validateDuplicateMember(Member member) {
