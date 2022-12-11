@@ -2,7 +2,6 @@ package com.example.web.exception;
 
 import com.example.web.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.ObjectUtils.Null;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +46,7 @@ public class ExControllerAdvice {
     public ResponseEntity<ApiResponse<Null>> MemberValidateExHandler(MemberValidateException exception, WebRequest request) {
         log.info("MemberValidateException = {}", exception.getClass());
         String defaultMessage = exception.getMessage();
-        ApiResponse<Null> memberValidateException = new ApiResponse<>(1001, "MemberValidateException", defaultMessage);
+        ApiResponse<Null> memberValidateException = new ApiResponse<>(exception.getCode(), "MemberValidateException", defaultMessage);
         memberValidateException.setPath(request);
         return new ResponseEntity<>(memberValidateException, HttpStatus.ACCEPTED);
     }
