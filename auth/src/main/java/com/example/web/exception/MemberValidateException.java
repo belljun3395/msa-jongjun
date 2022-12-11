@@ -1,5 +1,8 @@
 package com.example.web.exception;
 
+import lombok.Getter;
+
+@Getter
 public class MemberValidateException extends RuntimeException {
 
     private final int code;
