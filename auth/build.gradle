@@ -24,11 +24,9 @@ jar {
 dependencies {
     implementation 'org.springframework.retry:spring-retry:1.2.2.RELEASE'  // spring cloud requires spring-retry for auto-retry
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:2.1.5.RELEASE'  // To use Feign
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:2.1.6.RELEASE'
-    // 3. To use Eureka client
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:2.1.6.RELEASE' // 3. To use Eureka client
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-ribbon:2.1.6.RELEASE'  // 2. To use ribbon
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix:2.1.6.RELEASE'
-    // 1. To use spring-cloud-hystrix
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix:2.1.6.RELEASE' // 1. To use spring-cloud-hystrix
     implementation 'org.springframework.boot:spring-boot-starter-web:2.1.18.RELEASE'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
