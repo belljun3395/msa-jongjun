@@ -2,6 +2,7 @@ package com.example.service.member;
 
 import com.example.domain.member.Member;
 import com.example.domain.member.MemberRepository;
+import com.example.domain.member.MemberService;
 import com.example.domain.member.Role;
 import com.example.web.dto.MemberJoinDTO;
 import com.example.web.exception.MemberValidateException;

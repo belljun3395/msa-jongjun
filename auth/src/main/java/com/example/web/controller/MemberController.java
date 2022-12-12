@@ -1,6 +1,6 @@
 package com.example.web.controller;
 
-import com.example.service.member.MemberService;
+import com.example.domain.member.MemberService;
 import com.example.web.response.ApiResponse;
 import com.example.web.dto.MemberJoinDTO;
 import lombok.RequiredArgsConstructor;
