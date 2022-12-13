@@ -8,7 +8,6 @@ import com.example.web.dto.TokenDTO;
 import com.example.web.exception.MemberValidateException;
 import com.example.web.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,6 +61,7 @@ public class MemberServiceImpl implements MemberService {
 
     // todo 트랜잭션 원자성 문제 확인
     @Override
+    @Transactional
     public TokenDTO login(MemberLoginDTO memberLoginDTO) {
         String email = memberLoginDTO.getEmail();
         String password = memberLoginDTO.getPassword();

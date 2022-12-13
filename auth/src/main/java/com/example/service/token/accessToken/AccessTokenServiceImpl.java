@@ -12,10 +12,12 @@ import com.example.web.exception.TokenValidateError;
 import com.example.web.exception.TokenValidateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AccessTokenServiceImpl implements AccessTokenService {
 
@@ -25,6 +27,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
 
     @Override
+    @Transactional
     public void save(AccessToken accessToken) {
         accessTokenRepository.save(accessToken);
     }
