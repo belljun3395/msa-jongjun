@@ -1,6 +1,8 @@
 package com.example.web.controller;
 
 import com.example.domain.member.MemberService;
+import com.example.web.dto.MemberLoginDTO;
+import com.example.web.dto.TokenDTO;
 import com.example.web.response.ApiResponse;
 import com.example.web.dto.MemberJoinDTO;
 import lombok.RequiredArgsConstructor;
@@ -27,4 +29,9 @@ public class MemberController {
                 HttpStatus.OK);
     }
 
+    // todo cookie로 리턴 아님 header?
+    @PostMapping("/login")
+    public void join(@Validated MemberLoginDTO memberLoginDTO) {
+        TokenDTO tokenDTO = memberService.login(memberLoginDTO);
+    }
 }
