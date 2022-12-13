@@ -1,10 +1,10 @@
-package com.example.service.redis;
+package com.example.service.token.accessToken;
 
 import com.example.domain.member.Member;
 import com.example.domain.member.MemberRepository;
-import com.example.domain.redis.AccessToken;
-import com.example.domain.redis.AccessTokenRepository;
-import com.example.domain.redis.AccessTokenService;
+import com.example.domain.token.accessToken.AccessToken;
+import com.example.domain.token.accessToken.AccessTokenRepository;
+import com.example.domain.token.accessToken.AccessTokenService;
 import com.example.web.dto.MemberInfoDTO;
 import com.example.web.exception.MemberValidateError;
 import com.example.web.exception.MemberValidateException;

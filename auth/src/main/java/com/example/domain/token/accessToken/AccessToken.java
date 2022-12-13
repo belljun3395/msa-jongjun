@@ -1,4 +1,4 @@
-package com.example.domain.redis;
+package com.example.domain.token.accessToken;
 
 import com.example.domain.member.Role;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.example.domain.redis;
+package com.example.domain.token.accessToken;
 
 import org.springframework.data.repository.CrudRepository;
 
