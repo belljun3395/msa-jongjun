@@ -1,13 +1,15 @@
 package com.example.service.member;
 
-import com.example.domain.member.MemberService;
-import com.example.domain.member.Role;
-import com.example.domain.member.Member;
-import com.example.domain.member.MemberRepository;
+import com.example.domain.member.MemberLoginInfo;
+import com.example.domain.member.*;
 import com.example.web.dto.MemberJoinDTO;
+import com.example.web.dto.MemberLoginDTO;
+import com.example.web.dto.TokenDTO;
 import com.example.web.exception.MemberValidateException;
 import com.example.web.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.server.Session;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional
@@ -53,6 +57,36 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> memberByEmail = memberRepository.findMemberByEmail(member.getEmail());
         if (memberByEmail.isPresent()) {
             throw new MemberValidateException(EXIST_MEMBER);
+        }
+    }
+
+    // todo 트랜잭션 원자성 문제 확인
+    @Override
+    public TokenDTO login(MemberLoginDTO memberLoginDTO) {
+        String email = memberLoginDTO.getEmail();
+        String password = memberLoginDTO.getPassword();
+        String clientType = memberLoginDTO.getClientType();
+        String location = memberLoginDTO.getLocation();
+        Member member = findMemberBy(email);
+        validatePassword(password, member);
+        MemberLoginInfo memberLoginInfo = new MemberLoginInfo(member.getId(), member.getRole(), clientType, location);
+        applicationEventPublisher.publishEvent(new MemberLoginEvent(memberLoginInfo));
+        return new TokenDTO(memberLoginInfo.getAccessToken(), memberLoginInfo.getRefreshToken());
+    }
+
+    private Member findMemberBy(String email) {
+        Optional<Member> memberByEmail = memberRepository.findMemberByEmail(email);
+        if (memberByEmail.isEmpty()) {
+            throw new MemberValidateException(NO_EXIST_MEMBER);
+        }
+        return memberByEmail.get();
+    }
+
+    // todo Login Exception 구현
+    private void validatePassword(String password, Member member) {
+        boolean matches = passwordEncoder.matches(password, member.getPassword());
+        if (!matches) {
+            throw new IllegalStateException("로그인 실패");
         }
     }
 
