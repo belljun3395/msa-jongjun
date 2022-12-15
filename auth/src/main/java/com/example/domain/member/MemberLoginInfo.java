@@ -52,6 +52,10 @@ public class MemberLoginInfo {
         return tokenInfo;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     private String makeAccessToken() {
         return JWTToken.makeToken(new Date(ACCESS_TOKEN_EXP));
     }
