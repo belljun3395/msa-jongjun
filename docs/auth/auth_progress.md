@@ -12,7 +12,9 @@
 * [x] RefreshToken, 기종 타입, 비밀번호 그리고 로그아웃 여부 기록
 * [x] AccessToken 값은 redis에 저장
   * [ ] 트랜젝션 원자성 확인
-* [ ] Token 프런트로 전달
+* [x] Token 프런트로 전달
+  * [ ] Cookie HTTP Only 공부
+  * [ ] Header Authorization Bearer 공부
 * [ ] RDBMS와 Redis 성능 비교
 * [ ] Caching 공부 후 적용해 보기
 

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Null;
 
 @RestController
@@ -29,9 +30,10 @@ public class MemberController {
                 HttpStatus.OK);
     }
 
-    // todo cookie로 리턴 아님 header?
     @PostMapping("/login")
-    public void join(@Validated MemberLoginDTO memberLoginDTO) {
+    public void join(@Validated MemberLoginDTO memberLoginDTO, HttpServletResponse response) {
         TokenDTO tokenDTO = memberService.login(memberLoginDTO);
+        response.setHeader("Authorization", tokenDTO.getRefreshToken());
+        response.addCookie(tokenDTO.getTokenCookie());
     }
 }
