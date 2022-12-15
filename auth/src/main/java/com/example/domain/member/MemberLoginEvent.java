@@ -1,7 +1,9 @@
 package com.example.domain.member;
 
+import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
+@Getter
 public class MemberLoginEvent extends ApplicationEvent {
 
     private MemberLoginInfo memberLoginInfo;
@@ -11,7 +13,4 @@ public class MemberLoginEvent extends ApplicationEvent {
         this.memberLoginInfo = memberLoginInfo;
     }
 
-    public MemberLoginInfo getMemberLoginInfo() {
-        return memberLoginInfo;
-    }
 }

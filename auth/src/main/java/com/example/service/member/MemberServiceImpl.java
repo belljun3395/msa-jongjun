@@ -26,7 +26,7 @@ public class MemberServiceImpl implements MemberService {
 
     private static final String JOIN_SUCCESS = "join success!";
 
-    private final MemberRepository memberRepository;
+    private final MemberRepository repository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -37,14 +37,13 @@ public class MemberServiceImpl implements MemberService {
     public ApiResponse<Null> join(MemberJoinDTO memberJoinDTO) {
         Member member = convertToMember(memberJoinDTO);
         validateDuplicateMember(member);
-        memberRepository.save(member);
+        repository.save(member);
         return new ApiResponse<>(HttpStatus.CREATED.value(), JOIN_SUCCESS);
     }
 
     private Member convertToMember(MemberJoinDTO memberJoinDTO) {
         encodePassword(memberJoinDTO);
-        Member member = memberJoinDTO.convertToMember();
-        return member;
+        return memberJoinDTO.convertToMember();
     }
 
     private void encodePassword(MemberJoinDTO memberJoinDTO) {
@@ -53,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private void validateDuplicateMember(Member member) {
-        Optional<Member> memberByEmail = memberRepository.findMemberByEmail(member.getEmail());
+        Optional<Member> memberByEmail = repository.findMemberByEmail(member.getEmail());
         if (memberByEmail.isPresent()) {
             throw new MemberValidateException(EXIST_MEMBER);
         }
@@ -65,17 +64,27 @@ public class MemberServiceImpl implements MemberService {
     public TokenDTO login(MemberLoginDTO memberLoginDTO) {
         String email = memberLoginDTO.getEmail();
         String password = memberLoginDTO.getPassword();
-        String clientType = memberLoginDTO.getClientType();
-        String location = memberLoginDTO.getLocation();
         Member member = findMemberBy(email);
+
         validatePassword(password, member);
-        MemberLoginInfo memberLoginInfo = new MemberLoginInfo(member.getId(), member.getRole(), clientType, location);
+
+        MemberLoginInfo memberLoginInfo = makeMemberLoginInfo(member, memberLoginDTO);
         applicationEventPublisher.publishEvent(new MemberLoginEvent(memberLoginInfo));
+
         return new TokenDTO(memberLoginInfo.getAccessToken(), memberLoginInfo.getRefreshToken());
     }
 
+    private static MemberLoginInfo makeMemberLoginInfo(Member member, MemberLoginDTO memberLoginDTO) {
+        return MemberLoginInfo.builder()
+                .memberId(member.getId())
+                .role(member.getRole())
+                .clientType(memberLoginDTO.getClientType())
+                .location(memberLoginDTO.getLocation())
+                .build();
+    }
+
     private Member findMemberBy(String email) {
-        Optional<Member> memberByEmail = memberRepository.findMemberByEmail(email);
+        Optional<Member> memberByEmail = repository.findMemberByEmail(email);
         if (memberByEmail.isEmpty()) {
             throw new MemberValidateException(NO_EXIST_MEMBER);
         }
@@ -95,18 +104,18 @@ public class MemberServiceImpl implements MemberService {
     public void adjustRole(Member member, Role role) {
         Member unAdjustedRoleMember = getMember(member, role);
         Member adjustedRoleMember = new Member(unAdjustedRoleMember, role);
-        memberRepository.save(adjustedRoleMember);
+        repository.save(adjustedRoleMember);
     }
 
     private Member getMember(Member member, Role role) {
-        Optional<Member> byId = memberRepository.findById(member.getId());
-        if (byId.isEmpty()) {
+        Optional<Member> byIdMember = repository.findById(member.getId());
+        if (byIdMember.isEmpty()) {
             throw new MemberValidateException(NO_EXIST_MEMBER);
         }
-        Member byIdMember = byId.get();
-        checkAdmin(role, byIdMember);
-        checkMember(role, byIdMember);
-        return byIdMember;
+
+        checkAdmin(role, byIdMember.get());
+        checkMember(role, byIdMember.get());
+        return byIdMember.get();
     }
 
     private static void checkAdmin(Role role, Member byIdMember) {

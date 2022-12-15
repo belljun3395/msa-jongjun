@@ -2,6 +2,7 @@ package com.example.domain.member;
 
 
 import com.example.utils.token.JWTToken;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Date;
@@ -18,6 +19,9 @@ public class MemberLoginInfo {
     private final Long REFRESH_TOKEN_EXP = NOW + ONE_DAY;
     private final Long ACCESS_TOKEN_EXP = NOW + TWENTY_MIN;
 
+    private final String MEMBER_ID = "memberId";
+    private final String ROLE = "role";
+
     private Long memberId;
 
     private Role role;
@@ -31,6 +35,7 @@ public class MemberLoginInfo {
     private String refreshToken;
 
 
+    @Builder
     public MemberLoginInfo(Long memberId, Role role, String clientType, String location) {
         this.memberId = memberId;
         this.role = role;
@@ -40,26 +45,10 @@ public class MemberLoginInfo {
         this.refreshToken = makeAccessToken();
     }
 
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public String getClientType() {
-        return clientType;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public Map<String, Object> convertToMapForToken() {
-        HashMap<String, Object> tokenInfo = new HashMap<>();
-        tokenInfo.put("memberId", memberId);
-        tokenInfo.put("role", role);
+    public Map<String, Object> makeTokenInfo() {
+        Map<String, Object> tokenInfo = new HashMap<>();
+        tokenInfo.put(MEMBER_ID, memberId);
+        tokenInfo.put(ROLE, role);
         return tokenInfo;
     }
 
@@ -68,7 +57,7 @@ public class MemberLoginInfo {
     }
 
     private String makeRefreshToken() {
-        return JWTToken.makeToken(new Date(REFRESH_TOKEN_EXP), this.convertToMapForToken());
+        return JWTToken.makeToken(new Date(REFRESH_TOKEN_EXP), this.makeTokenInfo());
     }
 
 }

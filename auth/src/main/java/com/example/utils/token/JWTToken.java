@@ -12,7 +12,11 @@ import java.util.Map;
 
 public class JWTToken {
 
-    private static Key key = Keys.hmacShaKeyFor("iskeyhavetolongidontknowaboutthis".getBytes(StandardCharsets.UTF_8));
+    private static final String KEY = "iskeyhavetolongidontknowaboutthis";
+    private static final Key key = Keys.hmacShaKeyFor(KEY.getBytes(StandardCharsets.UTF_8));
+    private static String HEADER_TYPE = "JWT";
+    private static String HEADER_ALG = "HS256";
+    private static String TOKEN_ISSUER = "auth app";
 
     public static String makeToken(Date expiryDate) {
 
@@ -30,13 +34,13 @@ public class JWTToken {
 
     public static String makeToken(Date expiryDate, Map<String, Object> claim) {
 
-        Map<String, Object> jwtHeader = setHeader("JWT", "HS256");
+        Map<String, Object> jwtHeader = setHeader(HEADER_TYPE, HEADER_ALG);
 
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS256, key)
                 .setHeader(jwtHeader)
                 .setClaims(claim)
-                .setIssuer("auth app")
+                .setIssuer(TOKEN_ISSUER)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .compact();

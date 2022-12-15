@@ -1,7 +1,10 @@
 package com.example.domain.member;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 
+@Getter
 public enum Role {
     MEMBER("member"),
     ADMIN("admin"),
@@ -17,10 +20,6 @@ public enum Role {
         this.type = type;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public static Role makeRole(String roleString) {
         return Arrays.stream(Role.values())
                 .filter(role -> role.getType()
@@ -32,10 +31,10 @@ public enum Role {
     }
 
     public boolean isAdmin() {
-        return this == ADMIN;
+        return this.equals(ADMIN);
     }
 
     public boolean isMember() {
-        return this == MEMBER;
+        return this.equals(MEMBER);
     }
 }

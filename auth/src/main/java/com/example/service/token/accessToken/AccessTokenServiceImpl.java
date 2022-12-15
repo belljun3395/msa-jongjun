@@ -21,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccessTokenServiceImpl implements AccessTokenService {
 
-    private final AccessTokenRepository accessTokenRepository;
+    private final AccessTokenRepository repository;
 
     private final MemberRepository memberRepository;
 
@@ -29,29 +29,29 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     @Override
     @Transactional
     public void save(AccessToken accessToken) {
-        accessTokenRepository.save(accessToken);
+        repository.save(accessToken);
     }
 
     @Override
     public MemberInfoDTO browseMatchAccessToken(String accessTokenValue) {
-        AccessToken accessToken = getAccessToken(accessTokenValue);
-        Member memberInfo = getMemberInfoBy(accessToken);
-        return MemberInfoDTO.convertFrom(memberInfo);
+        AccessToken accessToken = getAccessTokenBy(accessTokenValue);
+        Member member = getMemberBy(accessToken);
+        return MemberInfoDTO.convertFrom(member);
     }
 
-    private AccessToken getAccessToken(String accessTokenValue) {
-        Optional<AccessToken> byId = accessTokenRepository.findById(accessTokenValue);
-        if (byId.isEmpty()) {
+    private AccessToken getAccessTokenBy(String accessTokenValue) {
+        Optional<AccessToken> byIdToken = repository.findById(accessTokenValue);
+        if (byIdToken.isEmpty()) {
             throw new TokenValidateException(TokenValidateError.ACCESS_TIME_EXCEED);
         }
-        return byId.get();
+        return byIdToken.get();
     }
 
-    private Member getMemberInfoBy(AccessToken accessToken) {
-        Optional<Member> memberInfo = memberRepository.findById(accessToken.getMemberId());
-        if (memberInfo.isEmpty()) {
+    private Member getMemberBy(AccessToken accessToken) {
+        Optional<Member> byIdMember = memberRepository.findById(accessToken.getMemberId());
+        if (byIdMember.isEmpty()) {
             throw new MemberValidateException(MemberValidateError.NO_EXIST_MEMBER);
         }
-        return memberInfo.get();
+        return byIdMember.get();
     }
 }
