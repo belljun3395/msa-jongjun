@@ -1,16 +1,18 @@
 package com.example.domain.login;
 
 import com.example.domain.member.Role;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Profile;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class LoginLog {
 
     @Id

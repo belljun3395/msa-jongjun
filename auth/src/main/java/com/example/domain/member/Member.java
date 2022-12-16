@@ -1,5 +1,6 @@
 package com.example.domain.member;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Table(name = "member")
 public class Member {
 
@@ -25,6 +26,7 @@ public class Member {
     @Column(name = "member_password")
     private String password;
 
+    // todo Role 분리 가능성 생각해보기
     @Column(name = "member_role")
     @Enumerated(value = EnumType.STRING)
     private Role role;

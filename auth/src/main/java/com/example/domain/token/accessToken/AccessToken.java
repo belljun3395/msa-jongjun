@@ -1,6 +1,7 @@
 package com.example.domain.token.accessToken;
 
 import com.example.domain.member.Role;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -12,11 +13,11 @@ import javax.persistence.Enumerated;
 
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @RedisHash(value = "accessToken")
 public class AccessToken {
 
-    private Long REDIS_EXPIRED_TIME = 1800L;
+    private final Long REDIS_EXPIRED_TIME = 1800L;
 
     @Id
     private String accessTokenValue;
