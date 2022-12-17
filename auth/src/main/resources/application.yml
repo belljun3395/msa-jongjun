@@ -9,20 +9,27 @@ spring:
   application:
     name: auth
   datasource:
+    schema:
+      - classpath:/member-schema.sql
+    data:
+      - classpath:/member-data.sql
+    initialization-mode: always
+#    h2 setting
     url: jdbc:h2:tcp://localhost/~/msa_jongjun;MODE=MYSQL
     username: sa
     password:
     driver-class-name: org.h2.Driver
-    schema:
-      - classpath:/member-schema.sql
-    data:
-    - classpath:/member-data.sql
+#    mySQL setting
+#    url: jdbc:mysql://127.0.0.1:3306/msa_jongjun?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+#    username: root
+#    password: kim@2737169
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
-        #        show_sql: true
+#        show_sql: true
         format_sql: true
   redis:
     host: localhost
