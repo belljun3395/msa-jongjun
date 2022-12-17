@@ -21,12 +21,12 @@ spring:
       - classpath:/member-data.sql
     initialization-mode: always
     #    mySQL setting
-    url: jdbc:mysql://127.0.0.1:3306/msa_jongjun?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-#    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/msa_jongjun?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+#    url: jdbc:mysql://127.0.0.1:3306/msa_jongjun?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/msa_jongjun?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
     username: root
     password: root@1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
-#    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
   jpa:
     hibernate:
       ddl-auto: none
