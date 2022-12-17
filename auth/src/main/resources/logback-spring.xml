@@ -48,28 +48,37 @@
         </encoder>
     </appender>
 
+    <springProfile name="test">
+        <logger name="ERROR_FILE_LOGGER" level="ERROR" additivity="true">
+            <appender-ref ref="ERROR_FILE_APPENDER"/>
+        </logger>
 
-    <logger name="ERROR_FILE_LOGGER" level="ERROR" additivity="true">
-        <appender-ref ref="ERROR_FILE_APPENDER"/>
-    </logger>
+        <logger name="DEFAULT_FILE_LOGGER" level="DEBUG" additivity="true">
+            <appender-ref ref="DEFAULT_FILE_APPENDER"/>
+        </logger>
 
-    <logger name="DEFAULT_FILE_LOGGER" level="DEBUG" additivity="true">
-        <appender-ref ref="DEFAULT_FILE_APPENDER"/>
-    </logger>
+        <logger name="API_ACCESS_APPENDER" level="DEBUG" additivity="true">
+            <appender-ref ref="API_ACCESS_APPENDER"/>
+        </logger>
 
-    <logger name="API_ACCESS_APPENDER" level="DEBUG" additivity="true">
-        <appender-ref ref="API_ACCESS_APPENDER"/>
-    </logger>
+        <logger name="jdbc" level="OFF"/>
+        <logger name="jdbc.connection" level="OFF"/>
+        <logger name="jdbc.sqlonly" level="OFF"/>
+        <logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
+            <appender-ref ref="DATABASE_FILE_APPENDER"/>
+        </logger>
+        <logger name="jdbc.audit" level="OFF"/>
+        <logger name="jdbc.resultset" level="OFF"/>
+        <logger name="jdbc.resultsettable" level="DEBUG"/>
+    </springProfile>
 
-    <!--Log4jdbc-->
-    <logger name="jdbc" level="OFF"/>
-    <logger name="jdbc.connection" level="OFF"/>
-    <logger name="jdbc.sqlonly" level="OFF"/>
-    <logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
-        <appender-ref ref="DATABASE_FILE_APPENDER"/>
-    </logger>
-    <logger name="jdbc.audit" level="OFF"/>
-    <logger name="jdbc.resultset" level="OFF"/>
-    <logger name="jdbc.resultsettable" level="INFO"/>
-
+    <springProfile name="dev">
+        <logger name="jdbc" level="OFF"/>
+        <logger name="jdbc.connection" level="OFF"/>
+        <logger name="jdbc.sqlonly" level="OFF"/>
+        <logger name="jdbc.sqltiming" level="DEBUG"/>
+        <logger name="jdbc.audit" level="OFF"/>
+        <logger name="jdbc.resultset" level="OFF"/>
+        <logger name="jdbc.resultsettable" level="DEBUG"/>
+    </springProfile>
 </configuration>
