@@ -20,10 +20,10 @@ spring:
     data:
       - classpath:/member-data.sql
     initialization-mode: always
-    url: jdbc:h2:tcp://localhost/~/msa_jongjun;MODE=MYSQL
+    url: jdbc:log4jdbc:h2:tcp://localhost/~/msa_jongjun;MODE=MYSQL
     username: sa
     password:
-    driver-class-name: org.h2.Driver
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
   jpa:
     hibernate:
       ddl-auto: none
