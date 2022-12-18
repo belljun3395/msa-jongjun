@@ -25,4 +25,7 @@ dependencies {
     implementation 'org.springframework.retry:spring-retry:2.0.0'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul:2.1.6.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:2.1.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:2.1.5.RELEASE'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 }
