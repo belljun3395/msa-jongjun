@@ -5,6 +5,7 @@ import com.example.domain.member.MemberRepository;
 import com.example.domain.token.accessToken.AccessToken;
 import com.example.domain.token.accessToken.AccessTokenRepository;
 import com.example.domain.token.accessToken.AccessTokenService;
+import com.example.utils.token.JWTToken;
 import com.example.web.dto.MemberInfoDTO;
 import com.example.web.exception.MemberValidateError;
 import com.example.web.exception.MemberValidateException;
@@ -32,9 +33,14 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         repository.save(accessToken);
     }
 
-    // todo check is work?
     @Override
+    @Transactional
     public MemberInfoDTO browseMatchAccessToken(String accessTokenValue) {
+        if (JWTToken.checkRefresh(accessTokenValue)) {
+            AccessToken accessToken = getAccessTokenBy(accessTokenValue);
+            accessToken.refreshExpiredTime();
+            save(accessToken);
+        }
         AccessToken accessToken = getAccessTokenBy(accessTokenValue);
         Member member = getMemberBy(accessToken);
         return MemberInfoDTO.convertFrom(member);
