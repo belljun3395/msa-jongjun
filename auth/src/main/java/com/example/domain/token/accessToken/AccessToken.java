@@ -17,7 +17,7 @@ import javax.persistence.Enumerated;
 @RedisHash(value = "accessToken")
 public class AccessToken {
 
-    private final Long REDIS_EXPIRED_TIME = 1800L;
+//    private final Long REDIS_EXPIRED_TIME = 1800L;
 
     @Id
     private String accessTokenValue;
@@ -34,7 +34,11 @@ public class AccessToken {
         this.accessTokenValue = accessTokenValue;
         this.memberId = memberId;
         this.role = role;
-        this.expiredTime = REDIS_EXPIRED_TIME;
+        this.expiredTime = 20 * 60L * 1000L;
+    }
+
+    public void refreshExpiredTime() {
+        this.expiredTime += 10 * 60L * 1000L;
     }
 }
 
