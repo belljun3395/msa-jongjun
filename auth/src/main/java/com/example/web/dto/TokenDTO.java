@@ -6,7 +6,7 @@ import javax.servlet.http.Cookie;
 @Data
 public class TokenDTO {
 
-    private String COOKIE_NAME = "access_token";
+    private String COOKIE_NAME = "refresh_token";
     private String COOKIE_PATH = "/";
     private String AUTH_TYPE = "Bearer";
 
@@ -20,14 +20,14 @@ public class TokenDTO {
     }
 
     public Cookie getTokenCookie() {
-        Cookie access_token = new Cookie(COOKIE_NAME, this.getBearerRefreshToken());
-        access_token.setHttpOnly(true);
-        access_token.setSecure(true);
-        access_token.setPath(COOKIE_PATH);
-        return access_token;
+        Cookie cookie = new Cookie(COOKIE_NAME, this.refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath(COOKIE_PATH);
+        return cookie;
     }
 
-    private String getBearerRefreshToken() {
-        return AUTH_TYPE + getRefreshToken();
+    public String getAuthorizationToken() {
+        return AUTH_TYPE + " " + accessToken;
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberLoginEventHandler {
 
-    private final LoginLogRepository loginLogRepository;
+    private final LoginLogRepository repository;
     private final AccessTokenRepository accessTokenRepository;
 
     @Async
@@ -24,15 +24,15 @@ public class MemberLoginEventHandler {
     public void handle(MemberLoginEvent event) {
         MemberLoginInfo memberLoginInfo = event.getMemberLoginInfo();
         // todo 동시 로그인 문제 해결
-        loginLogRepository.save(makeLoginLog(memberLoginInfo));
-        accessTokenRepository.save(makeAccessToken(memberLoginInfo));
+        repository.save(loginLogFrom(memberLoginInfo));
+        accessTokenRepository.save(accessTokenFrom(memberLoginInfo));
     }
 
-    private AccessToken makeAccessToken(MemberLoginInfo memberLoginInfo) {
+    private AccessToken accessTokenFrom(MemberLoginInfo memberLoginInfo) {
         return new AccessToken(memberLoginInfo.getAccessToken(), memberLoginInfo.getMemberId(), memberLoginInfo.getRole());
     }
 
-    private LoginLog makeLoginLog(MemberLoginInfo memberLoginInfo) {
+    private LoginLog loginLogFrom(MemberLoginInfo memberLoginInfo) {
         return LoginLog.builder()
                 .memberId(memberLoginInfo.getMemberId())
                 .role(memberLoginInfo.getRole())

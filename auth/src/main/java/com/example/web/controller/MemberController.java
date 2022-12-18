@@ -19,8 +19,10 @@ import javax.validation.constraints.Null;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/members")
+@RequestMapping( "/members")
 public class MemberController {
+
+    private final String AUTHORIZATION = "Authorization";
     private final MemberService memberService;
 
     @PostMapping("/join")
@@ -31,9 +33,9 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public void join(@Validated MemberLoginDTO memberLoginDTO, HttpServletResponse response) {
+    public void login(@Validated MemberLoginDTO memberLoginDTO, HttpServletResponse response) {
         TokenDTO tokenDTO = memberService.login(memberLoginDTO);
-        response.setHeader("Authorization", tokenDTO.getRefreshToken());
+        response.setHeader(AUTHORIZATION, tokenDTO.getAuthorizationToken());
         response.addCookie(tokenDTO.getTokenCookie());
     }
 }

@@ -93,8 +93,7 @@ public class MemberServiceImpl implements MemberService {
 
     // todo Login Exception 구현
     private void validatePassword(String password, Member member) {
-        boolean matches = passwordEncoder.matches(password, member.getPassword());
-        if (!matches) {
+        if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new IllegalStateException("로그인 실패");
         }
     }
@@ -103,33 +102,32 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void adjustRole(Member member, Role role) {
         Member unAdjustedRoleMember = getMember(member, role);
-        Member adjustedRoleMember = new Member(unAdjustedRoleMember, role);
-        repository.save(adjustedRoleMember);
+        repository.save(new Member(unAdjustedRoleMember, role));
     }
 
     private Member getMember(Member member, Role role) {
-        Optional<Member> byIdMember = repository.findById(member.getId());
-        if (byIdMember.isEmpty()) {
+        Optional<Member> memberById = repository.findById(member.getId());
+        if (memberById.isEmpty()) {
             throw new MemberValidateException(NO_EXIST_MEMBER);
         }
 
-        checkAdmin(role, byIdMember.get());
-        checkMember(role, byIdMember.get());
-        return byIdMember.get();
+        isAdmin(role, memberById.get());
+        isMember(role, memberById.get());
+        return memberById.get();
     }
 
-    private static void checkAdmin(Role role, Member byIdMember) {
+    private static void isAdmin(Role role, Member memberById) {
         if (role.equals(Role.ADMIN)) {
-            if (byIdMember.getRole()
+            if (memberById.getRole()
                     .isAdmin()) {
                 throw new MemberValidateException(ALREADY_ADMIN);
             }
         }
     }
 
-    private static void checkMember(Role role, Member byIdMember) {
+    private static void isMember(Role role, Member memberById) {
         if (role.equals(Role.MEMBER)) {
-            if (byIdMember.getRole()
+            if (memberById.getRole()
                     .isMember()) {
                 throw new MemberValidateException(ALREADY_MEMBER);
             }

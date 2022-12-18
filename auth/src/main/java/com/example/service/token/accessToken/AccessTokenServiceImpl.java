@@ -32,6 +32,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         repository.save(accessToken);
     }
 
+    // todo check is work?
     @Override
     public MemberInfoDTO browseMatchAccessToken(String accessTokenValue) {
         AccessToken accessToken = getAccessTokenBy(accessTokenValue);
@@ -40,18 +41,18 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     }
 
     private AccessToken getAccessTokenBy(String accessTokenValue) {
-        Optional<AccessToken> byIdToken = repository.findById(accessTokenValue);
-        if (byIdToken.isEmpty()) {
+        Optional<AccessToken> tokenById = repository.findById(accessTokenValue);
+        if (tokenById.isEmpty()) {
             throw new TokenValidateException(TokenValidateError.ACCESS_TIME_EXCEED);
         }
-        return byIdToken.get();
+        return tokenById.get();
     }
 
     private Member getMemberBy(AccessToken accessToken) {
-        Optional<Member> byIdMember = memberRepository.findById(accessToken.getMemberId());
-        if (byIdMember.isEmpty()) {
+        Optional<Member> memberById = memberRepository.findById(accessToken.getMemberId());
+        if (memberById.isEmpty()) {
             throw new MemberValidateException(MemberValidateError.NO_EXIST_MEMBER);
         }
-        return byIdMember.get();
+        return memberById.get();
     }
 }
