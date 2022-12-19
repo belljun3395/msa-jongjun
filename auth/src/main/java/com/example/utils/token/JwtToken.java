@@ -43,7 +43,7 @@ public class JwtToken {
         return jwtHeader;
     }
 
-    public static boolean checkRefresh(String token) {
+    public static boolean validateExpirationTime(String token) {
         Long expirationTime = getExpirationTime(token);
         long now = System.currentTimeMillis();
         if (expirationTime - now < TEN_MINUTE) {
