@@ -11,7 +11,9 @@ import com.example.web.exception.MemberValidateError;
 import com.example.web.exception.MemberValidateException;
 import com.example.web.exception.TokenValidateError;
 import com.example.web.exception.TokenValidateException;
+import com.example.web.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AccessTokenServiceImpl implements AccessTokenService {
+
+    private static final String VALIDATE_SUCCESS = "accessToken validate success!";
 
     private final AccessTokenRepository repository;
 
@@ -35,15 +39,19 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     @Override
     @Transactional
-    public MemberInfoDTO browseMatchAccessToken(String accessTokenValue) {
-        if (JwtToken.checkRefresh(accessTokenValue)) {
+    public ApiResponse<MemberInfoDTO> browseMatchAccessToken(String accessTokenValue) {
+        validateAccessToken(accessTokenValue);
+        AccessToken accessToken = getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
+        Member member = getMemberBy(accessToken);
+        return new ApiResponse<>(HttpStatus.FOUND.value(), VALIDATE_SUCCESS, MemberInfoDTO.convertFrom(member));
+    }
+
+    private void validateAccessToken(String accessTokenValue) {
+        if (JwtToken.validateExpirationTime(accessTokenValue)) {
             AccessToken accessToken = getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
             accessToken.refreshExpiredTime();
             save(accessToken);
         }
-        AccessToken accessToken = getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
-        Member member = getMemberBy(accessToken);
-        return MemberInfoDTO.convertFrom(member);
     }
 
     private AccessToken getAccessTokenBy(String accessTokenValue) {
