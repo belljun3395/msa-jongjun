@@ -11,9 +11,7 @@ import com.example.web.exception.MemberValidateError;
 import com.example.web.exception.MemberValidateException;
 import com.example.web.exception.TokenValidateError;
 import com.example.web.exception.TokenValidateException;
-import com.example.web.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccessTokenServiceImpl implements AccessTokenService {
 
-    private static final String VALIDATE_SUCCESS = "accessToken validate success!";
 
     private final AccessTokenRepository repository;
 
@@ -39,11 +36,11 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     @Override
     @Transactional
-    public ApiResponse<MemberInfoDTO> browseMatchAccessToken(String accessTokenValue) {
+    public MemberInfoDTO browseMatchAccessToken(String accessTokenValue) {
         validateAccessToken(accessTokenValue);
         AccessToken accessToken = getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
         Member member = getMemberBy(accessToken);
-        return new ApiResponse<>(HttpStatus.FOUND.value(), VALIDATE_SUCCESS, MemberInfoDTO.convertFrom(member));
+        return MemberInfoDTO.convertFrom(member);
     }
 
     @Override

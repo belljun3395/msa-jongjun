@@ -7,7 +7,7 @@ public interface AccessTokenService {
 
     void save(AccessToken accessToken);
 
-    ApiResponse<MemberInfoDTO> browseMatchAccessToken(String accessToken);
+    MemberInfoDTO browseMatchAccessToken(String accessToken);
 
     void validateAccessToken(String accessToken);
 
