@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletResponse;
+
 
 @Slf4j
 @RestController
@@ -21,8 +23,11 @@ public class TokenController {
     private final AccessTokenService service;
 
     @GetMapping("/members")
-    public ResponseEntity<ApiResponse<MemberInfoDTO>> browseMatchAccessToken(WebRequest request) {
-        String accessTokenValue = request.getHeader(AUTHORIZATION_HEADER);
+    public ResponseEntity<ApiResponse<MemberInfoDTO>>
+    browseMatchAccessToken(WebRequest request, HttpServletResponse response,
+                           @RequestHeader("Authorization") String accessTokenValue) {
+
+        response.setHeader(AUTHORIZATION_HEADER, accessTokenValue);
         return new ResponseEntity<>(service.browseMatchAccessToken(accessTokenValue)
                 .setPath(request),
                 HttpStatus.OK);
