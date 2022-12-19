@@ -29,8 +29,9 @@ public class TokenController {
     }
 
     @GetMapping("/members/validation")
-    public void validateAccessToken(WebRequest request) {
+    public boolean validateAccessToken(WebRequest request) {
         String accessTokenValue = request.getHeader(AUTHORIZATION_HEADER);
-        service.browseMatchAccessToken(accessTokenValue);
+        service.validateAccessToken(accessTokenValue);
+        return true;
     }
 }
