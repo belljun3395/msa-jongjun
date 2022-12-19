@@ -1,13 +1,13 @@
 package com.example.domain.member;
 
 
-import com.example.utils.token.JWTToken;
+import com.example.utils.token.JwtToken;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Getter
 public class MemberLoginInfo {
@@ -21,6 +21,8 @@ public class MemberLoginInfo {
 
     private final String MEMBER_ID = "memberId";
     private final String ROLE = "role";
+
+    private final String UUID_KEY = "uuid";
 
     private Long memberId;
 
@@ -42,26 +44,32 @@ public class MemberLoginInfo {
         this.clientType = clientType;
         this.location = location;
         this.accessToken = makeAccessToken();
-        this.refreshToken = makeAccessToken();
+        this.refreshToken = makeRefreshToken();
     }
 
-    public Map<String, Object> makeTokenInfo() {
+    public Role getRole() {
+        return this.role;
+    }
+
+    private String makeAccessToken() {
+        return JwtToken.makeToken(ACCESS_TOKEN_EXP, this.makeUUID());
+    }
+
+    private String makeRefreshToken() {
+        return JwtToken.makeToken(REFRESH_TOKEN_EXP, this.makeTokenInfo());
+    }
+
+    private Map<String, Object> makeTokenInfo() {
         Map<String, Object> tokenInfo = new HashMap<>();
         tokenInfo.put(MEMBER_ID, memberId);
         tokenInfo.put(ROLE, role);
         return tokenInfo;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    private String makeAccessToken() {
-        return JWTToken.makeToken(new Date(ACCESS_TOKEN_EXP));
-    }
-
-    private String makeRefreshToken() {
-        return JWTToken.makeToken(new Date(REFRESH_TOKEN_EXP), this.makeTokenInfo());
+    private Map<String, Object> makeUUID() {
+        HashMap<String, Object> uuidInfo = new HashMap<>();
+        uuidInfo.put(UUID_KEY, UUID.randomUUID());
+        return uuidInfo;
     }
 
 }
