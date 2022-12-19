@@ -9,4 +9,6 @@ public interface AccessTokenService {
 
     ApiResponse<MemberInfoDTO> browseMatchAccessToken(String accessToken);
 
+    void validateAccessToken(String accessToken);
+
 }

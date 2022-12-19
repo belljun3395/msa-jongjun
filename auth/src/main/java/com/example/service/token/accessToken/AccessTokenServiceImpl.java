@@ -46,7 +46,9 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         return new ApiResponse<>(HttpStatus.FOUND.value(), VALIDATE_SUCCESS, MemberInfoDTO.convertFrom(member));
     }
 
-    private void validateAccessToken(String accessTokenValue) {
+    @Override
+    @Transactional
+    public void validateAccessToken(String accessTokenValue) {
         if (JwtToken.validateExpirationTime(accessTokenValue)) {
             AccessToken accessToken = getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
             accessToken.refreshExpiredTime();
