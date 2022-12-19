@@ -16,6 +16,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ZuulPreLoggingFilter extends ZuulFilter {
 
+    private final String AUTHORIZATION_HEADER = "Authorization";
+
     private final FeignValidateAccessToken token;
 
     @Override
@@ -47,7 +49,8 @@ public class ZuulPreLoggingFilter extends ZuulFilter {
         if (uri.matches("/auth/members/.*")) {
             return true;
         }
-        String accessToken = request.getHeader("authorization");
+
+        String accessToken = request.getHeader(AUTHORIZATION_HEADER);
         return token.validateAccessToken(accessToken);
     }
 }
