@@ -9,12 +9,12 @@ server:
   port: 8765
 
 zuul:
+  sensitiveHeaders:
   routes:
     auth:
       path: /**
       serviceId: auth #eureka에 등록된 Id를 말한다.
       stripPrefix: false
-      sensitiveHeaders: Cookie, Set-Cookie, Authorization
 eureka:
   instance:
     non-secure-port: ${server.port}
