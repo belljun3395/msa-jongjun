@@ -20,11 +20,17 @@ public class TokenController {
     private final String AUTHORIZATION_HEADER = "Authorization";
     private final AccessTokenService service;
 
-    @GetMapping("/member")
+    @GetMapping("/members")
     public ResponseEntity<ApiResponse<MemberInfoDTO>> browseMatchAccessToken(WebRequest request) {
         String accessTokenValue = request.getHeader(AUTHORIZATION_HEADER);
         return new ResponseEntity<>(service.browseMatchAccessToken(accessTokenValue)
                 .setPath(request),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/members/validation")
+    public void validateAccessToken(WebRequest request) {
+        String accessTokenValue = request.getHeader(AUTHORIZATION_HEADER);
+        service.browseMatchAccessToken(accessTokenValue);
     }
 }
