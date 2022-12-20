@@ -9,17 +9,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Null;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping( "/members")
+@RequestMapping("/members")
 public class MemberController {
 
     private final String AUTHORIZATION = "Authorization";
@@ -37,5 +36,18 @@ public class MemberController {
         TokenDTO tokenDTO = memberService.login(memberLoginDTO);
         response.setHeader(AUTHORIZATION, tokenDTO.getAuthorizationToken());
         response.addCookie(tokenDTO.getTokenCookie());
+    }
+
+    @PostMapping("/logout")
+    public void logout(@RequestHeader("Authorization") String token, HttpServletResponse response) {
+        memberService.logout(token);
+        removeCookieToken(response);
+    }
+
+    private static void removeCookieToken(HttpServletResponse response) {
+        Cookie tokenCookie = new Cookie("refresh_token", null);
+        tokenCookie.setMaxAge(0);
+        response.addCookie(tokenCookie);
+//        response.setHeader("Set-Cookie", null);
     }
 }
