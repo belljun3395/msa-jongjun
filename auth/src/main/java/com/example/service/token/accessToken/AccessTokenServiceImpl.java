@@ -56,7 +56,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     private AccessToken getAccessTokenBy(String accessTokenValue) {
         Optional<AccessToken> tokenById = repository.findById(accessTokenValue);
         if (tokenById.isEmpty()) {
-            throw new TokenValidateException(TokenValidateError.ACCESS_TIME_EXCEED);
+            throw new TokenValidateException(TokenValidateError.NO_TOKEN_LOG);
         }
         return tokenById.get();
     }

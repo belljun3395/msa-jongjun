@@ -2,7 +2,7 @@ package com.example.web.exception;
 
 public enum TokenValidateError {
 
-    ACCESS_TIME_EXCEED(1201, "exceed access token's time period "),
+    NO_TOKEN_LOG(1201, "there are no token log please login again"),
     ;
 
     private String message;
