@@ -55,10 +55,10 @@ public class ExControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({TokenValidateException.class})
-    public ResponseEntity<ApiResponse<Null>> TokenValidateExHandler(MemberValidateException exception, WebRequest request) {
+    public ResponseEntity<ApiResponse<Null>> TokenValidateExHandler(TokenValidateException exception, WebRequest request) {
         log.error("TokenValidateException = [{}][{}]", exception.getClass(), exception.getMessage());
         String defaultMessage = exception.getMessage();
-        ApiResponse<Null> tokenValidateException = new ApiResponse<>(exception.getCode(), "MemberValidateException", defaultMessage);
+        ApiResponse<Null> tokenValidateException = new ApiResponse<>(exception.getCode(), "TokenValidateException", defaultMessage);
         tokenValidateException.setPath(request);
         return new ResponseEntity<>(tokenValidateException, HttpStatus.ACCEPTED);
     }
