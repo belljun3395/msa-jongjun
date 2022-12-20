@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Profile;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -29,7 +28,6 @@ public class LoginLog {
     private String location;
 
     private String refreshToken;
-    private Boolean logout;
 
     private Timestamp timestamp;
 
@@ -40,11 +38,7 @@ public class LoginLog {
         this.clientType = clientType;
         this.location = location;
         this.refreshToken = refreshToken;
-        this.logout = false;
         this.timestamp = new Timestamp(System.currentTimeMillis());
     }
 
-    public void logut() {
-        this.logout = true;
-    }
 }
