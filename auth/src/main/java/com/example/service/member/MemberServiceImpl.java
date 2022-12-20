@@ -133,4 +133,9 @@ public class MemberServiceImpl implements MemberService {
             }
         }
     }
+
+    @Override
+    public void logout(String accessTokenValue) {
+        applicationEventPublisher.publishEvent(new MemberLogoutEvent(accessTokenValue));
+    }
 }

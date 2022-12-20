@@ -18,4 +18,6 @@ public interface MemberService {
 
     void adjustRole(Member member, Role role);
 
+    void logout(String accessTokenValue);
+
 }
