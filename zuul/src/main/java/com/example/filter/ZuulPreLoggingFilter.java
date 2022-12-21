@@ -1,5 +1,6 @@
 package com.example.filter;
 
+import com.example.exception.NotValidateTokenExceptionCustom;
 import com.example.token.FeignValidateAccessToken;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -51,7 +52,10 @@ public class ZuulPreLoggingFilter extends ZuulFilter {
         }
 
         String accessToken = request.getHeader(AUTHORIZATION_HEADER);
-        return token.validateAccessToken(accessToken);
+        if (!token.validateAccessToken(accessToken)) {
+            throw new NotValidateTokenExceptionCustom();
+        }
+        return true;
     }
 }
 
