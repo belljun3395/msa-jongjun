@@ -11,6 +11,6 @@ public class FeignValidateAccessTokenFallbackFactory implements FallbackFactory<
     @Override
     public FeignValidateAccessToken create(Throwable cause) {
         log.error("error = [{}][{}]", cause.getCause(), cause.getMessage());
-        return token -> false;
+        return null;
     }
 }
