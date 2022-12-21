@@ -9,6 +9,9 @@ server:
   port: 8765
 
 zuul:
+  SendErrorFilter:
+    post:
+      disable: true
   sensitiveHeaders:
   routes:
     auth:
