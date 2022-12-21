@@ -8,4 +8,9 @@ public class FeignValidateAccessTokenFallbackImpl implements FeignValidateAccess
     public boolean validateAccessToken(String token) {
         return false;
     }
+
+    @Override
+    public boolean validateAccessTokenRole(String token, String role) {
+        return false;
+    }
 }
