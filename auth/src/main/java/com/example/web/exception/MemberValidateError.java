@@ -6,6 +6,7 @@ public enum MemberValidateError {
     NO_EXIST_MEMBER(1102, "there are no exist member information"),
     ALREADY_ADMIN(1103, "this member is already admin"),
     ALREADY_MEMBER(1104, "this member is already member"),
+    LOGIN_FAIL(1105, "login fail"),
     ;
 
     private String message;
