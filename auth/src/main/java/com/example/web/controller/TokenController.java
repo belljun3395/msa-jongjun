@@ -19,14 +19,18 @@ public class TokenController {
     private final AccessTokenService service;
 
     @GetMapping("/members")
-    public MemberInfoDTO browseMatchAccessToken(HttpServletResponse response, @RequestHeader("Authorization") String accessTokenValue) {
+    public MemberInfoDTO browseMemberMatch(HttpServletResponse response, @RequestHeader("Authorization") String accessTokenValue) {
         response.setHeader(AUTHORIZATION_HEADER, accessTokenValue);
-        return service.browseMatchAccessToken(accessTokenValue);
+        return service.browseMemberMatch(accessTokenValue);
     }
 
-    @GetMapping("/members/validation")
+    @GetMapping("/validation")
     public boolean validateAccessToken(@RequestHeader("Authorization") String accessTokenValue) {
-        service.validateAccessToken(accessTokenValue);
-        return true;
+        return service.validateAccessToken(accessTokenValue);
+    }
+
+    @GetMapping("/validation/role/{role}")
+    public boolean validateAccessTokenRole(@RequestHeader("Authorization") String accessTokenValue, @PathVariable String role) {
+        return service.validateAccessTokenRole(accessTokenValue, role);
     }
 }
