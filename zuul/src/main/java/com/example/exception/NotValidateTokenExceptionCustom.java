@@ -1,7 +1,7 @@
 package com.example.exception;
 
 public class NotValidateTokenExceptionCustom extends CustomZuulException {
-    private  int code = 1002;
+    private  int code = 102;
 
     private String error = "NotValidateTokenException";
 

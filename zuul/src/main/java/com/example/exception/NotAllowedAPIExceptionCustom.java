@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class NotAllowedAPIExceptionCustom extends CustomZuulException {
-    private int code = 1001;
+    private int code = 101;
 
     private String error = "NotAllowedApi";
 
