@@ -11,6 +11,8 @@ import com.example.web.exception.MemberValidateError;
 import com.example.web.exception.MemberValidateException;
 import com.example.web.exception.TokenValidateError;
 import com.example.web.exception.TokenValidateException;
+import io.jsonwebtoken.JwtException;
+import io.lettuce.core.RedisException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +38,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     @Override
     @Transactional
-    public MemberInfoDTO browseMatchAccessToken(String accessTokenValue) {
+    public MemberInfoDTO browseMemberMatch(String accessTokenValue) {
         validateAccessToken(accessTokenValue);
         AccessToken accessToken = getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
         Member member = getMemberBy(accessToken);
@@ -45,11 +47,16 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     @Override
     @Transactional
-    public void validateAccessToken(String accessTokenValue) {
-        if (JwtToken.validateExpirationTime(accessTokenValue)) {
-            AccessToken accessToken = getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
-            accessToken.refreshExpiredTime();
-            save(accessToken);
+    public boolean validateAccessToken(String accessTokenValue) {
+        try {
+            if (JwtToken.validateExpirationTime(accessTokenValue)) {
+                AccessToken accessToken = getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
+                accessToken.refreshExpiredTime();
+                save(accessToken);
+            }
+            return true;
+        } catch (JwtException | RedisException e) {
+            return false;
         }
     }
 
@@ -67,5 +74,16 @@ public class AccessTokenServiceImpl implements AccessTokenService {
             throw new MemberValidateException(MemberValidateError.NO_EXIST_MEMBER);
         }
         return memberById.get();
+    }
+
+    @Override
+    public boolean validateAccessTokenRole(String accessTokenValue, String role) {
+        Optional<AccessToken> tokenById = repository.findById(JwtToken.getUUID(accessTokenValue));
+        if (tokenById.isEmpty()) {
+            throw new TokenValidateException(TokenValidateError.NO_TOKEN_LOG);
+        }
+        AccessToken accessToken = tokenById.get();
+        return role == accessToken.getRole()
+                .getType();
     }
 }
