@@ -3,6 +3,7 @@ package com.example.web.exception;
 public enum TokenValidateError {
 
     NO_TOKEN_LOG(1201, "there are no token log please login again"),
+    NOT_MATCH_ROLE(1202, "can't access API, because not allowed Role"),
     ;
 
     private String message;
