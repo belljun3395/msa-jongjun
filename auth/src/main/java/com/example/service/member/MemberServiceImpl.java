@@ -6,15 +6,12 @@ import com.example.web.dto.MemberJoinDTO;
 import com.example.web.dto.MemberLoginDTO;
 import com.example.web.dto.TokenDTO;
 import com.example.web.exception.MemberValidateException;
-import com.example.web.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Null;
 import java.util.Optional;
 
 import static com.example.web.exception.MemberValidateError.*;
@@ -24,8 +21,6 @@ import static com.example.web.exception.MemberValidateError.*;
 @Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService {
 
-    private static final String JOIN_SUCCESS = "join success!";
-
     private final MemberRepository repository;
 
     private final PasswordEncoder passwordEncoder;
@@ -34,11 +29,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public ApiResponse<Null> join(MemberJoinDTO memberJoinDTO) {
+    public void join(MemberJoinDTO memberJoinDTO) {
         Member member = convertToMember(memberJoinDTO);
         validateDuplicateMember(member);
         repository.save(member);
-        return new ApiResponse<>(HttpStatus.CREATED.value(), JOIN_SUCCESS);
     }
 
     private Member convertToMember(MemberJoinDTO memberJoinDTO) {
@@ -91,10 +85,9 @@ public class MemberServiceImpl implements MemberService {
         return memberByEmail.get();
     }
 
-    // todo Login Exception 구현
     private void validatePassword(String password, Member member) {
         if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new IllegalStateException("로그인 실패");
+            throw new MemberValidateException(LOGIN_FAIL);
         }
     }
 

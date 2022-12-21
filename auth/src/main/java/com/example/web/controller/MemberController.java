@@ -5,16 +5,14 @@ import com.example.web.dto.MemberLoginDTO;
 import com.example.web.dto.TokenDTO;
 import com.example.web.response.ApiResponse;
 import com.example.web.dto.MemberJoinDTO;
+import com.example.web.response.ApiResponseGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Null;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,10 +23,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/join")
-    public ResponseEntity<ApiResponse<Null>> join(WebRequest request, @Validated MemberJoinDTO memberJoinDTO) {
-        return new ResponseEntity<>(memberService.join(memberJoinDTO)
-                .setPath(request),
-                HttpStatus.OK);
+    public ApiResponse<ApiResponse.withCodeAndMessage> join(@Validated MemberJoinDTO memberJoinDTO) {
+        memberService.join(memberJoinDTO);
+        return ApiResponseGenerator.success(HttpStatus.OK, 1100, "join success");
     }
 
     @PostMapping("/login")
