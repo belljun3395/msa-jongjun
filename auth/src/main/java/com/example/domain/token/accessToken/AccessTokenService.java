@@ -1,14 +1,15 @@
 package com.example.domain.token.accessToken;
 
 import com.example.web.dto.MemberInfoDTO;
-import com.example.web.response.ApiResponse;
 
 public interface AccessTokenService {
 
     void save(AccessToken accessToken);
 
-    MemberInfoDTO browseMatchAccessToken(String accessToken);
+    MemberInfoDTO browseMemberMatch(String accessToken);
 
-    void validateAccessToken(String accessToken);
+    boolean validateAccessToken(String accessTokenValue);
+
+    boolean validateAccessTokenRole(String accessTokenValue, String role);
 
 }
