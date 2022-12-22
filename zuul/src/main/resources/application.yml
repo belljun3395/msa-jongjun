@@ -18,6 +18,11 @@ zuul:
       path: /**
       serviceId: auth #eureka에 등록된 Id를 말한다.
       stripPrefix: false
+    group:
+      path: /**
+      serviceId: group #eureka에 등록된 Id를 말한다.
+      stripPrefix: false
+
 eureka:
   instance:
     non-secure-port: ${server.port}
