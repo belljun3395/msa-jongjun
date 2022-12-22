@@ -8,10 +8,24 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.2/524e0a697e9d62950b2f763d88d35cd8dc82a9a1/lombok-1.18.2.jar" />
         </processorPath>
-        <module name="msa-jongjun.auth.main" />
+정        <module name="msa-jongjun.zuul.main" />
         <module name="msa-jongjun.group.main" />
-        <module name="msa-jongjun.zuul.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.2/524e0a697e9d62950b2f763d88d35cd8dc82a9a1/lombok-1.18.2.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/2.1.0.RELEASE/ca2d4c225e268383898de7255061d4cd4d165970/spring-boot-configuration-processor-2.1.0.RELEASE.jar" />
+        </processorPath>
         <module name="msa-jongjun.email.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/2.1.0.RELEASE/ca2d4c225e268383898de7255061d4cd4d165970/spring-boot-configuration-processor-2.1.0.RELEASE.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.2/524e0a697e9d62950b2f763d88d35cd8dc82a9a1/lombok-1.18.2.jar" />
+        </processorPath>
+        <module name="msa-jongjun.auth.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11" />
