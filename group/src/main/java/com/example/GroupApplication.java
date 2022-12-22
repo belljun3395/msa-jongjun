@@ -6,8 +6,8 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 @SpringBootApplication
 @EnableEurekaClient
-public class Group {
+public class GroupApplication {
     public static void main(String[] args) {
-        SpringApplication.run(Group.class);
+        SpringApplication.run(GroupApplication.class);
     }
 }
