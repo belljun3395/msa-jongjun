@@ -10,6 +10,7 @@
         </processorPath>
         <module name="msa-jongjun.zuul.main" />
         <module name="msa-jongjun.auth.main" />
+        <module name="msa-jongjun.group.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11" />
