@@ -12,7 +12,7 @@ spring:
     name: auth
   cloud:
     discovery:
-      enabled: false
+      enabled: true # for eureka
   datasource:
     schema:
       - classpath:/member-schema.sql
@@ -37,6 +37,10 @@ spring:
   redis:
     host: localhost
     port: 6379
+  kafka:
+    bootstrap-servers: localhost:9093 #h2와 포트 동일
+    consumer:
+      group-id: auth
 
 hystrix:
   command:
