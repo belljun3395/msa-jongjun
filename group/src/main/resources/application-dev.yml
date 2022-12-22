@@ -1,0 +1,52 @@
+server:
+  port: 8083
+  servlet:
+    session:
+      tracking-modes: cookie
+      timeout: 1800
+
+spring:
+  application:
+    name: group
+  profiles:
+    active: dev
+  cloud:
+    discovery:
+      enabled: true # for eureka
+  datasource:
+#    schema:
+#      - classpath:/member-schema.sql
+#      - classpath:/login-log-schema.sql
+#    data:
+#      - classpath:/member-data.sql
+#    initialization-mode: always
+    url: jdbc:log4jdbc:h2:tcp://localhost/~/msa_jongjun_group;MODE=MYSQL
+#    url: jdbc:h2:tcp://localhost/~/msa_jongjun_group;MODE=MYSQL
+    username: sa
+    password:
+#    driver-class-name: org.h2.Driver
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+  jpa:
+    hibernate:
+#      ddl-auto: none
+      ddl-auto: create
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+
+group:
+  ribbon:
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 1
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka  # default address
+
+logging.level:
+  org.hibernate.SQL: debug
+
