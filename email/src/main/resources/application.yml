@@ -8,3 +8,7 @@ server:
 spring:
   application:
     name: email
+  datasource:
+  redis:
+    host: localhost
+    port: 6379

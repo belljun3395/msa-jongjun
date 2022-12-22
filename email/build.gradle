@@ -24,6 +24,7 @@ jar {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:2.1.18.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:2.1.6.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 }
