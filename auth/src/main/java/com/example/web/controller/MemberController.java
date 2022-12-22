@@ -1,7 +1,9 @@
 package com.example.web.controller;
 
 import com.example.domain.member.MemberService;
+import com.example.domain.member.Role;
 import com.example.web.dto.MemberLoginDTO;
+import com.example.web.dto.MemberRoleDTO;
 import com.example.web.dto.TokenDTO;
 import com.example.web.response.ApiResponse;
 import com.example.web.dto.MemberJoinDTO;
@@ -46,5 +48,10 @@ public class MemberController {
         tokenCookie.setMaxAge(0);
         response.addCookie(tokenCookie);
 //        response.setHeader("Set-Cookie", null);
+    }
+
+    @PostMapping("/role")
+    public void adjustRole(MemberRoleDTO memberRoleDTO) {
+        memberService.adjustRole(memberRoleDTO.getMemberId(), Role.makeRole(memberRoleDTO.getRole()));
     }
 }
