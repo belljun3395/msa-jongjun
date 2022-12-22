@@ -1,0 +1,10 @@
+server:
+  port: 8084
+  servlet:
+    session:
+      tracking-modes: cookie
+      timeout: 1800
+
+spring:
+  application:
+    name: email
