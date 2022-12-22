@@ -59,7 +59,7 @@ public class MemberServiceImplTest {
         //given
 
         //when
-        memberService.adjustRole(member, Role.ADMIN);
+        memberService.adjustRole(member.getId(), Role.ADMIN);
         Member repositoryMember = memberRepository.findById(member.getId())
                 .get();
 
@@ -76,7 +76,7 @@ public class MemberServiceImplTest {
                 .get();
 
         //when
-        memberService.adjustRole(getMember, Role.MEMBER);
+        memberService.adjustRole(getMember.getId(), Role.MEMBER);
         Member repositoryMember = memberRepository.findById(getMember.getId())
                 .get();
 
@@ -94,7 +94,7 @@ public class MemberServiceImplTest {
 
         //then
         Assertions.assertThatExceptionOfType(MemberValidateException.class)
-                .isThrownBy(() -> memberService.adjustRole(adminMember, Role.ADMIN));
+                .isThrownBy(() -> memberService.adjustRole(adminMember.getId(), Role.ADMIN));
     }
 
 }

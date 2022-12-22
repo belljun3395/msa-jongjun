@@ -12,7 +12,7 @@ public interface MemberService {
 
     TokenDTO login(MemberLoginDTO memberLoginDTO);
 
-    void adjustRole(Member member, Role role);
+    void adjustRole(Long member, Role role);
 
     void logout(String accessTokenValue);
 

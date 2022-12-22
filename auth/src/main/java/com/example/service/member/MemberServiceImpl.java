@@ -93,13 +93,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void adjustRole(Member member, Role role) {
-        Member unAdjustedRoleMember = getMember(member, role);
+    public void adjustRole(Long memberId, Role role) {
+        Member unAdjustedRoleMember = getMember(memberId, role);
         repository.save(new Member(unAdjustedRoleMember, role));
     }
 
-    private Member getMember(Member member, Role role) {
-        Optional<Member> memberById = repository.findById(member.getId());
+    private Member getMember(Long memberId, Role role) {
+        Optional<Member> memberById = repository.findById(memberId);
         if (memberById.isEmpty()) {
             throw new MemberValidateException(NO_EXIST_MEMBER);
         }
