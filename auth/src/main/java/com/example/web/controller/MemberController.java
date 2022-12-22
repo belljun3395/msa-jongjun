@@ -2,11 +2,8 @@ package com.example.web.controller;
 
 import com.example.domain.member.MemberService;
 import com.example.domain.member.Role;
-import com.example.web.dto.MemberLoginDTO;
-import com.example.web.dto.MemberRoleDTO;
-import com.example.web.dto.TokenDTO;
+import com.example.web.dto.*;
 import com.example.web.response.ApiResponse;
-import com.example.web.dto.MemberJoinDTO;
 import com.example.web.response.ApiResponseGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,5 +50,15 @@ public class MemberController {
     @PostMapping("/role")
     public void adjustRole(MemberRoleDTO memberRoleDTO) {
         memberService.adjustRole(memberRoleDTO.getMemberId(), Role.makeRole(memberRoleDTO.getRole()));
+    }
+
+    @PostMapping("/email")
+    public String emailAuth(MemberAuthInfoDTO memberAuthInfoDTO) {
+        return memberService.emailAuth(memberAuthInfoDTO);
+    }
+
+    @PostMapping("/email/key")
+    public void validateKey(AuthKeyInfoDTO authKeyInfoDTO) {
+        memberService.validateAuthKey(authKeyInfoDTO);
     }
 }

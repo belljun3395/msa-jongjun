@@ -2,17 +2,20 @@ package com.example.service.member;
 
 import com.example.domain.member.MemberLoginInfo;
 import com.example.domain.member.*;
-import com.example.web.dto.MemberJoinDTO;
-import com.example.web.dto.MemberLoginDTO;
-import com.example.web.dto.TokenDTO;
+import com.example.web.dto.*;
 import com.example.web.exception.MemberValidateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.Optional;
+import java.util.Random;
 
 import static com.example.web.exception.MemberValidateError.*;
 
@@ -26,6 +29,10 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
 
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    private final KafkaTemplate<String, MemberAuthInfoDTO> memberAuthInfoDTOKafkaTemplate;
+
+    private final KafkaTemplate<String, AuthKeyInfoDTO> authKeyInfoDTOKafkaTemplate;
 
     @Override
     @Transactional
@@ -130,5 +137,69 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void logout(String accessTokenValue) {
         applicationEventPublisher.publishEvent(new MemberLogoutEvent(accessTokenValue));
+    }
+
+    @Override
+    public String emailAuth(MemberAuthInfoDTO memberAuthInfoDTO) {
+
+        String uuid = createKey();
+        memberAuthInfoDTO.setUuid(uuid);
+        ListenableFuture<SendResult<String, MemberAuthInfoDTO>> emailAuth = memberAuthInfoDTOKafkaTemplate.send("emailAuth", memberAuthInfoDTO);
+        emailAuth.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onSuccess(SendResult<String, MemberAuthInfoDTO> result) {
+                System.out.println("Sent message=[" + memberAuthInfoDTO +
+                        "] with offset=[" + result.getRecordMetadata()
+                        .offset() + "]");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                System.out.println("Unable to send message=["
+                        + memberAuthInfoDTO + "] due to : " + ex.getMessage());
+            }
+        });
+
+        return uuid;
+    }
+
+    private String createKey() {
+        StringBuffer key = new StringBuffer();
+        Random rnd = new Random();
+        for (int i = 0; i < 8; i++) { // 인증코드 8자리
+            int index = rnd.nextInt(3); // 0~2 까지 랜덤
+            switch (index) {
+                case 0:
+                    key.append((char) ((int) (rnd.nextInt(26)) + 97));
+                    break;
+                case 1:
+                    key.append((char) ((int) (rnd.nextInt(26)) + 65));
+                    break;
+                case 2:
+                    key.append((rnd.nextInt(10)));
+                    break;
+            }
+        }
+        return key.toString();
+    }
+
+    @Override
+    public void validateAuthKey(AuthKeyInfoDTO authKeyInfoDTO) {
+        ListenableFuture<SendResult<String, AuthKeyInfoDTO>> keyAuth = authKeyInfoDTOKafkaTemplate.send("keyAuth", authKeyInfoDTO);
+
+        keyAuth.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                System.out.println("Unable to send message=["
+                        + authKeyInfoDTO + "] due to : " + ex.getMessage());
+            }
+
+            @Override
+            public void onSuccess(SendResult<String, AuthKeyInfoDTO> result) {
+                System.out.println("Sent message=[" + authKeyInfoDTO +
+                        "] with offset=[" + result.getRecordMetadata()
+                        .offset() + "]");
+            }
+        });
     }
 }
