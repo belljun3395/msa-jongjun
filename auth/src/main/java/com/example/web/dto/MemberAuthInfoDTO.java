@@ -7,4 +7,5 @@ public class MemberAuthInfoDTO {
     private Long memberId;
     private String email;
     private String uuid;
+    private String key;
 }

@@ -9,4 +9,5 @@ public class EmailAuthInfo {
     private String uuid;
     private Long memberId;
     private String email;
+    private String key;
 }

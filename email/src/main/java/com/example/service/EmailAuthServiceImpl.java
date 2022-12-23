@@ -1,8 +1,5 @@
 package com.example.service;
 
-import com.example.domain.AuthKey;
-import com.example.domain.AuthKeyRepository;
-import com.example.dto.AuthKeyInfo;
 import com.example.dto.EmailAuthInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.Optional;
-import java.util.Random;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,7 +17,6 @@ public class EmailAuthServiceImpl implements EmailAuthService {
 
     private final EmailService emailService;
     private final JavaMailSender emailSender;
-    private final AuthKeyRepository authKeyRepository;
 
     @Value("${AdminMail.id}")
     private String adminMailId;
@@ -30,14 +24,10 @@ public class EmailAuthServiceImpl implements EmailAuthService {
 
     @Override
     @Transactional
-    public String sendAuthEmail(EmailAuthInfo emailAuthInfo) throws Exception {
-        String ePw = createKey();
-        AuthKey authKey = new AuthKey(emailAuthInfo.getUuid(), ePw, emailAuthInfo.getMemberId());
-        authKeyRepository.save(authKey);
+    public void sendAuthEmail(EmailAuthInfo emailAuthInfo) throws Exception {
+        String ePw = emailAuthInfo.getKey();
         MimeMessage message = createMessage(emailAuthInfo.getEmail(), ePw);
         emailService.sendEmail(message);
-        System.out.println("authKey.getUuid() = " + authKey.getUuid());
-        return authKey.getUuid();
     }
 
     private MimeMessage createMessage(String toEmail, String ePw)throws Exception{
@@ -66,38 +56,5 @@ public class EmailAuthServiceImpl implements EmailAuthService {
         message.setFrom(new InternetAddress(adminMailId,"smilegateWinterDev"));//보내는 사람
 
         return message;
-    }
-    private String createKey() {
-        StringBuffer key = new StringBuffer();
-        Random rnd = new Random();
-
-        for (int i = 0; i < 8; i++) { // 인증코드 8자리
-            int index = rnd.nextInt(3); // 0~2 까지 랜덤
-            switch (index) {
-                case 0:
-                    key.append((char) ((int) (rnd.nextInt(26)) + 97));
-                    //  a~z  (ex. 1+97=98 => (char)98 = 'b')
-                    break;
-                case 1:
-                    key.append((char) ((int) (rnd.nextInt(26)) + 65));
-                    //  A~Z
-                    break;
-                case 2:
-                    key.append((rnd.nextInt(10)));
-                    // 0~9
-                    break;
-            }
-        }
-        return key.toString();
-    }
-
-    @Override
-    public boolean validateAuthKey(AuthKeyInfo authKeyInfo) {
-        Optional<AuthKey> authKeyById = authKeyRepository.findById(authKeyInfo.getUuid());
-        if (authKeyById.isEmpty()) {
-            throw new IllegalStateException("auth again please");
-        }
-        AuthKey authKey = authKeyById.get();
-        return authKey.getKey() == authKeyInfo.getAuthKey();
     }
 }

@@ -1,5 +1,7 @@
 package com.example.service.member;
 
+import com.example.domain.authMemberInfo.AuthMemberInfo;
+import com.example.domain.authMemberInfo.AuthMemberInfoRepository;
 import com.example.domain.member.MemberLoginInfo;
 import com.example.domain.member.*;
 import com.example.web.dto.*;
@@ -32,7 +34,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final KafkaTemplate<String, MemberAuthInfoDTO> memberAuthInfoDTOKafkaTemplate;
 
-    private final KafkaTemplate<String, AuthKeyInfoDTO> authKeyInfoDTOKafkaTemplate;
+    private final AuthMemberInfoRepository authMemberInfoRepository;
 
     @Override
     @Transactional
@@ -143,14 +145,18 @@ public class MemberServiceImpl implements MemberService {
     public String emailAuth(MemberAuthInfoDTO memberAuthInfoDTO) {
 
         String uuid = createKey();
+        String key = createKey();
         memberAuthInfoDTO.setUuid(uuid);
+        memberAuthInfoDTO.setKey(key);
         ListenableFuture<SendResult<String, MemberAuthInfoDTO>> emailAuth = memberAuthInfoDTOKafkaTemplate.send("emailAuth", memberAuthInfoDTO);
+
         emailAuth.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult<String, MemberAuthInfoDTO> result) {
                 System.out.println("Sent message=[" + memberAuthInfoDTO +
                         "] with offset=[" + result.getRecordMetadata()
                         .offset() + "]");
+                authMemberInfoRepository.save(new AuthMemberInfo(uuid, key));
             }
 
             @Override
@@ -184,22 +190,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void validateAuthKey(AuthKeyInfoDTO authKeyInfoDTO) {
-        ListenableFuture<SendResult<String, AuthKeyInfoDTO>> keyAuth = authKeyInfoDTOKafkaTemplate.send("keyAuth", authKeyInfoDTO);
-
-        keyAuth.addCallback(new ListenableFutureCallback<>() {
-            @Override
-            public void onFailure(Throwable ex) {
-                System.out.println("Unable to send message=["
-                        + authKeyInfoDTO + "] due to : " + ex.getMessage());
-            }
-
-            @Override
-            public void onSuccess(SendResult<String, AuthKeyInfoDTO> result) {
-                System.out.println("Sent message=[" + authKeyInfoDTO +
-                        "] with offset=[" + result.getRecordMetadata()
-                        .offset() + "]");
-            }
-        });
+    public boolean validateAuthKey(AuthKeyInfoDTO authKeyInfoDTO) {
+        Optional<AuthMemberInfo> authMemberInfoById = authMemberInfoRepository.findById(authKeyInfoDTO.getUuid());
+        if (authMemberInfoById.isEmpty()) {
+            throw new IllegalStateException("no email auth record");
+        }
+        AuthMemberInfo authMemberInfo = authMemberInfoById.get();
+        System.out.println("authMemberInfo.getKey() = " + authMemberInfo.getKey());
+        System.out.println("authKeyInfoDTO = " + authKeyInfoDTO.getAuthKey());
+        System.out.println("authMemberInfo.getKey() == authKeyInfoDTO.getAuthKey() = " + authMemberInfo.getKey().equals(authKeyInfoDTO.getAuthKey()) );
+        return authMemberInfo.getKey()
+                .equals(authKeyInfoDTO.getAuthKey());
     }
 }

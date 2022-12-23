@@ -58,7 +58,7 @@ public class MemberController {
     }
 
     @PostMapping("/email/key")
-    public void validateKey(AuthKeyInfoDTO authKeyInfoDTO) {
-        memberService.validateAuthKey(authKeyInfoDTO);
+    public boolean validateKey(AuthKeyInfoDTO authKeyInfoDTO) {
+        return memberService.validateAuthKey(authKeyInfoDTO);
     }
 }

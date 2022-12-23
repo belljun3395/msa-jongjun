@@ -13,9 +13,6 @@ spring:
     consumer:
       group-id: auth
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-  redis:
-    host: localhost
-    port: 6379
 
 mail:
   smtp:

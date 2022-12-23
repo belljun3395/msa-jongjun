@@ -15,5 +15,5 @@ public interface MemberService {
 
     String emailAuth(MemberAuthInfoDTO memberAuthInfoDTO);
 
-    void validateAuthKey(AuthKeyInfoDTO authKeyInfoDTO);
+    boolean validateAuthKey(AuthKeyInfoDTO authKeyInfoDTO);
 }

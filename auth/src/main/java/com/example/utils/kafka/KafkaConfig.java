@@ -28,8 +28,4 @@ public class KafkaConfig {
     public NewTopic emailAuth() {
         return new NewTopic("emailAuth", 1, (short) 1);
     }
-    @Bean
-    public NewTopic keyAuth() {
-        return new NewTopic("keyAuth", 1, (short) 1);
-    }
 }
