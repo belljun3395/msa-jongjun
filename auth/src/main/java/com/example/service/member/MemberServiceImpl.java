@@ -196,9 +196,6 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalStateException("no email auth record");
         }
         AuthMemberInfo authMemberInfo = authMemberInfoById.get();
-        System.out.println("authMemberInfo.getKey() = " + authMemberInfo.getKey());
-        System.out.println("authKeyInfoDTO = " + authKeyInfoDTO.getAuthKey());
-        System.out.println("authMemberInfo.getKey() == authKeyInfoDTO.getAuthKey() = " + authMemberInfo.getKey().equals(authKeyInfoDTO.getAuthKey()) );
         return authMemberInfo.getKey()
                 .equals(authKeyInfoDTO.getAuthKey());
     }
