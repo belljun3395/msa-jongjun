@@ -42,7 +42,7 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public void logout(@CookieValue("access_token") String token, HttpServletResponse response) {
+    public void logout(@CookieValue("refresh_token") String token, HttpServletResponse response) {
         memberService.logout(token);
         removeCookieToken(response);
     }
