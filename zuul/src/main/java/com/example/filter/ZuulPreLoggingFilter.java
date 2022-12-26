@@ -47,7 +47,7 @@ public class ZuulPreLoggingFilter extends ZuulFilter {
         RequestContext context = RequestContext.getCurrentContext();
         HttpServletRequest request = context.getRequest();
         String uri = request.getRequestURI();
-        if (uri.matches("/auth/members/.*")) {
+        if (uri.matches("/auth/members/.*") || uri.matches("/auth/tokens/.*")) {
             return true;
         }
 
