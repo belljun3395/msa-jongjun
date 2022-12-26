@@ -29,7 +29,7 @@ public class TokenController {
     }
 
     @GetMapping("/access")
-    public AccessToken makeAccessToken(@CookieValue(value = "refresh_token") String refresh_token) {
+    public AccessToken makeAccessToken(@CookieValue String refresh_token) {
         return service.makeAccessToken(refresh_token);
     }
 
