@@ -12,12 +12,8 @@ import java.util.UUID;
 @Getter
 public class MemberLoginInfo {
 
-    private final Long NOW = System.currentTimeMillis();
     private final Long ONE_DAY = 24 * 60 * 60 * 1000L;
     private final Long TWENTY_MIN = 20 * 60L * 1000L;
-
-    private final Long REFRESH_TOKEN_EXP = NOW + ONE_DAY;
-    private final Long ACCESS_TOKEN_EXP = NOW + TWENTY_MIN;
 
     private final String MEMBER_ID = "memberId";
     private final String ROLE = "role";
@@ -52,10 +48,11 @@ public class MemberLoginInfo {
     }
 
     private String makeAccessToken() {
+        long ACCESS_TOKEN_EXP = System.currentTimeMillis() + TWENTY_MIN;
         return JwtToken.makeToken(ACCESS_TOKEN_EXP, this.makeUUID());
     }
-
     private String makeRefreshToken() {
+        long REFRESH_TOKEN_EXP = System.currentTimeMillis() + ONE_DAY;
         return JwtToken.makeToken(REFRESH_TOKEN_EXP, this.makeTokenInfo());
     }
 
