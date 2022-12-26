@@ -8,6 +8,10 @@ public interface AccessTokenService {
 
     MemberInfoDTO browseMemberMatch(String accessToken);
 
+    AccessToken findAccessToken(String accessTokenValue);
+
+    AccessToken makeAccessToken(String refreshToken);
+
     boolean validateAccessToken(String accessTokenValue);
 
     boolean validateAccessTokenRole(String accessTokenValue, String role);

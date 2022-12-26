@@ -2,6 +2,7 @@ package com.example.service.token.accessToken;
 
 import com.example.domain.member.Member;
 import com.example.domain.member.MemberRepository;
+import com.example.domain.member.Role;
 import com.example.domain.token.accessToken.AccessToken;
 import com.example.domain.token.accessToken.AccessTokenRepository;
 import com.example.domain.token.accessToken.AccessTokenService;
@@ -17,12 +18,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+
+import static com.example.domain.member.Role.*;
+import static com.example.domain.member.Role.makeRole;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AccessTokenServiceImpl implements AccessTokenService {
+
+    private final String MEMBER_ID = "memberId";
+    private final String ROLE_KEY = "role";
+    private final Long NOW = System.currentTimeMillis();
+    private final Long TWENTY_MIN = 20 * 60L * 1000L;
+
+    private final Long ACCESS_TOKEN_EXP = NOW + TWENTY_MIN;
+    private final String UUID_KEY = "uuid";
 
 
     private final AccessTokenRepository repository;
@@ -45,6 +60,27 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         return MemberInfoDTO.convertFrom(member);
     }
 
+    @Override
+    public AccessToken findAccessToken(String accessTokenValue) {
+        validateAccessToken(accessTokenValue);
+        return getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
+    }
+
+    @Override
+    public AccessToken makeAccessToken(String refreshToken) {
+        JwtToken.validateExpirationTime(refreshToken);
+        Long memberId = Long.valueOf(JwtToken.decodeToken(refreshToken, MEMBER_ID));
+        String Role = JwtToken.decodeToken(refreshToken, ROLE_KEY);
+        AccessToken accessToken = new AccessToken(JwtToken.makeToken(ACCESS_TOKEN_EXP, this.makeUUID()), memberId, makeRole(Role));
+        repository.save(accessToken);
+        return accessToken;
+    }
+
+    private Map<String, Object> makeUUID() {
+        HashMap<String, Object> uuidInfo = new HashMap<>();
+        uuidInfo.put(UUID_KEY, UUID.randomUUID());
+        return uuidInfo;
+    }
     @Override
     @Transactional
     public boolean validateAccessToken(String accessTokenValue) {
