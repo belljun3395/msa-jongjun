@@ -73,11 +73,20 @@ public class JwtToken {
     }
 
     public static String getUUID(String token) {
-        return (String) Jwts.parserBuilder()
+        return String.valueOf(Jwts.parserBuilder()
                 .setSigningKey(SIGN_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get(UUID_KEY);
+                .get(UUID_KEY));
+    }
+
+    public static String decodeToken(String token, String key) {
+        return String.valueOf(Jwts.parserBuilder()
+                .setSigningKey(SIGN_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get(key));
     }
 }
