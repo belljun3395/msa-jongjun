@@ -21,6 +21,12 @@ public class MemberController {
     private final String AUTHORIZATION = "Authorization";
     private final MemberService memberService;
 
+    @GetMapping("/{memberId}")
+    public ApiResponse<ApiResponse.withData> memberInfo(@PathVariable("memberId") Long memberId) {
+        MemberInfoDTO memberInfoDTO = memberService.memberInfo(memberId);
+        return ApiResponseGenerator.success(memberInfoDTO, HttpStatus.OK, 1100, "memberInfo");
+    }
+
     @PostMapping("/join")
     public ApiResponse<ApiResponse.withCodeAndMessage> join(@Validated MemberJoinDTO memberJoinDTO) {
         memberService.join(memberJoinDTO);
@@ -31,20 +37,21 @@ public class MemberController {
     public void login(@Validated MemberLoginDTO memberLoginDTO, HttpServletResponse response) {
         TokenDTO tokenDTO = memberService.login(memberLoginDTO);
         response.setHeader(AUTHORIZATION, tokenDTO.getAuthorizationToken());
+        response.setHeader("Access-Control-Expose-Headers", AUTHORIZATION);
         response.addCookie(tokenDTO.getTokenCookie());
     }
 
     @PostMapping("/logout")
-    public void logout(@RequestHeader("Authorization") String token, HttpServletResponse response) {
+    public void logout(@CookieValue("access_token") String token, HttpServletResponse response) {
         memberService.logout(token);
         removeCookieToken(response);
     }
 
     private static void removeCookieToken(HttpServletResponse response) {
-        Cookie tokenCookie = new Cookie("refresh_token", null);
-        tokenCookie.setMaxAge(0);
-        response.addCookie(tokenCookie);
-//        response.setHeader("Set-Cookie", null);
+        Cookie refreshToken = new Cookie("refresh_token", null);
+        refreshToken.setMaxAge(0);
+        refreshToken.setPath("/");
+        response.addCookie(refreshToken);
     }
 
     @PostMapping("/role")

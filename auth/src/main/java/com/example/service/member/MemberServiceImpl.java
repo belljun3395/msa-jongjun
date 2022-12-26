@@ -199,4 +199,14 @@ public class MemberServiceImpl implements MemberService {
         return authMemberInfo.getKey()
                 .equals(authKeyInfoDTO.getAuthKey());
     }
+
+    @Override
+    public MemberInfoDTO memberInfo(Long memberId) {
+        Optional<Member> memberById = repository.findById(memberId);
+        if (memberById.isEmpty()) {
+            throw new MemberValidateException(NO_EXIST_MEMBER);
+        }
+        Member member = memberById.get();
+        return new MemberInfoDTO(member.getEmail(), member.getName(), member.getRole());
+    }
 }

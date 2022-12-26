@@ -16,4 +16,6 @@ public interface MemberService {
     String emailAuth(MemberAuthInfoDTO memberAuthInfoDTO);
 
     boolean validateAuthKey(AuthKeyInfoDTO authKeyInfoDTO);
+
+    MemberInfoDTO memberInfo(Long memberId);
 }
