@@ -23,7 +23,7 @@ public enum Role {
     public static Role makeRole(String roleString) {
         return Arrays.stream(Role.values())
                 .filter(role -> role.getType()
-                        .equals(roleString))
+                        .equals(roleString.toLowerCase()))
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException(ERROR_RIGHT_ROLE)
