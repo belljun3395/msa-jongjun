@@ -172,7 +172,7 @@ public class MemberLoginEventHandler {
 
 --- 
 
-#### token expireTime refresh
+#### token expireTime refresh => 2차 구현시 전면 변화
 ```java
 // AccessTokenServiceImpl
 
@@ -203,6 +203,26 @@ token을 조회하고 그 토큰의 expireTime 그리고 redis에 저장될 acce
 위처럼 expireTime만 변경시키고 token의 값은 유지하는 것이 괜찮은지 궁금합니다.
 
 ---
+
+=> 변화
+```java
+// TokenController
+@GetMapping("/access")
+public AccessToken makeAccessToken(@CookieValue String refresh_token) {
+    return service.makeAccessToken(refresh_token);
+}
+```
+위에서 accessToken의 expireTime을 확인하고 그것을 갱신해준 이유는 프런트가 요청마다 전달하는 accessToken을 통해 모든 인가를 진행하려는 이유였습니다.
+
+하지만 프런트에서 기존의 header로 전해주던 accessToken을 페이지 이동시 header에 유지하고 다닐 수 없다는 것을 프런트 구현중 알게되었습니다.
+
+그렇기에 refreshToken을 쿠키로 프런트에 전달하고 모든 요청전에 refreshToken을 통해 accessToken을 발급 받아 그 페이지에서 사용할 수 있도록 하였습니다.
+
+즉 이전에는 accessToken을 로그인시 처음 발급하고 그것을 연장하며 사용하였다면, 지금은 refreshToken을 통해 매 요청전에 accessToken을 새로 발급받고 그 토큰을 사용하여 인가를 진행하였습니다.
+
+이처럼 항상 access, refresh Token을 구현할 때면 어떻게 그것을 전달하고 또 사용해야할지 고민이 됩니다.
+
+실무에서는 Token을 어떻게 사용하는지 궁금합니다.
 
 #### jwt Token
 
@@ -458,6 +478,7 @@ ___
 
 ## 추후계획
 ### 0. 공통 속성들 하나로 관리할 수 있도록 환경 구축하기
+
 ### 1. 현재 프로젝트에 대한 테스트 결과 남기기 
 
 ### 2. 개인 목표에 명시한 것처럼 Netflix 기반의 라이브러리를 다음과 같이 변경하는 것
