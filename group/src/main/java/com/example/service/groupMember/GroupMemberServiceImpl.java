@@ -30,8 +30,9 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     @Override
     public List<GroupDTO> browseGroup(Long memberId) {
         List<GroupMember> groupMembers = repository.findAllByMemberId(memberId);
-        ArrayList<GroupDTO> groups = new ArrayList<>();
+        List<GroupDTO> groups = new ArrayList<>();
         for (GroupMember gm : groupMembers) {
+            // todo lazyLoading 확인
             Group group = gm.getGroup();
             groups.add(new GroupDTO(group.getId(), group.getGroupName(), group.getMaxMember(), group.getOwnerId()));
         }
