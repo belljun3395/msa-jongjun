@@ -22,6 +22,10 @@ zuul:
       path: /**
       serviceId: group #eureka에 등록된 Id를 말한다.
       stripPrefix: false
+    email:
+      path: /**
+      serviceId: email #eureka에 등록된 Id를 말한다.
+      stripPrefix: false
 
 eureka:
   instance:
