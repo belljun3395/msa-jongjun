@@ -19,11 +19,11 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/tokens")
 public class TokenController {
 
-    private final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
     private final AccessTokenService service;
 
     @GetMapping
-    public ApiResponse<ApiResponse.withData> accessTokenInfo(@RequestHeader("Authorization") String access_token) {
+    public ApiResponse<ApiResponse.withData> accessTokenInfo(@RequestHeader(AUTHORIZATION_HEADER) String access_token) {
         AccessToken accessToken = service.findAccessToken(access_token);
         return ApiResponseGenerator.success(accessToken, HttpStatus.OK, 1100, "member info");
     }
@@ -34,18 +34,18 @@ public class TokenController {
     }
 
     @GetMapping("/members")
-    public MemberInfoDTO browseMemberMatch(HttpServletResponse response, @RequestHeader("Authorization") String accessTokenValue) {
+    public MemberInfoDTO browseMemberMatch(HttpServletResponse response, @RequestHeader(AUTHORIZATION_HEADER) String accessTokenValue) {
         response.setHeader(AUTHORIZATION_HEADER, accessTokenValue);
         return service.browseMemberMatch(accessTokenValue);
     }
 
     @GetMapping("/validation")
-    public boolean validateAccessToken(@RequestHeader("Authorization") String accessTokenValue) {
+    public boolean validateAccessToken(@RequestHeader(AUTHORIZATION_HEADER) String accessTokenValue) {
         return service.validateAccessToken(accessTokenValue);
     }
 
     @GetMapping("/validation/role/{role}")
-    public boolean validateAccessTokenRole(@RequestHeader("Authorization") String accessTokenValue, @PathVariable String role) {
+    public boolean validateAccessTokenRole(@RequestHeader(AUTHORIZATION_HEADER) String accessTokenValue, @PathVariable String role) {
         return service.validateAccessTokenRole(accessTokenValue, role);
     }
 }

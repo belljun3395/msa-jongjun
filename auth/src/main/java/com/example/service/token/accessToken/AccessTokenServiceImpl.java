@@ -85,10 +85,8 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     @Transactional
     public boolean validateAccessToken(String accessTokenValue) {
         try {
-            if (JwtToken.validateExpirationTime(accessTokenValue)) {
-                AccessToken accessToken = getAccessTokenBy(JwtToken.getUUID(accessTokenValue));
-                accessToken.refreshExpiredTime();
-                save(accessToken);
+            if (!JwtToken.validateExpirationTime(accessTokenValue)) {
+                return false;
             }
             return true;
         } catch (JwtException | RedisException e) {

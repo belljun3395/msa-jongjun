@@ -26,7 +26,6 @@ public class Member {
     @Column(name = "member_password")
     private String password;
 
-    // todo Role 분리 가능성 생각해보기
     @Column(name = "member_role")
     @Enumerated(value = EnumType.STRING)
     private Role role;

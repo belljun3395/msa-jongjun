@@ -38,9 +38,5 @@ public class AccessToken  {
         this.role = role;
         this.expiredTime = 20 * 60L * 1000L;
     }
-
-    public void refreshExpiredTime() {
-        this.expiredTime += 10 * 60L * 1000L;
-    }
 }
 

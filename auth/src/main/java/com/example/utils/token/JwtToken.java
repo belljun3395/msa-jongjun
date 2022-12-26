@@ -19,7 +19,7 @@ public class JwtToken {
     private static String HEADER_ALG = "HS256";
     private static String TOKEN_ISSUER = "auth app";
 
-    private static Long TEN_MINUTE = 10 * 60 * 1000L;
+    private static Long ONE_DAY = 24 * 60 * 60 * 1000L;
 
 
     public static String makeToken(Long expiryDate, Map<String, Object> claims) {
@@ -46,7 +46,7 @@ public class JwtToken {
     public static boolean validateExpirationTime(String token) {
         Long expirationTime = getExpirationTime(token);
         long now = System.currentTimeMillis();
-        if (expirationTime - now < TEN_MINUTE) {
+        if (expirationTime - now < ONE_DAY) {
             expirationRefresh(token, now);
             return true;
         }
@@ -69,7 +69,7 @@ public class JwtToken {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .setExpiration(new Date(now + TEN_MINUTE));
+                .setExpiration(new Date(now + ONE_DAY));
     }
 
     public static String getUUID(String token) {

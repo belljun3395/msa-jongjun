@@ -29,12 +29,6 @@ public class LogInterceptor implements HandlerInterceptor {
         return true;
     }
 
-//    rest API 사용할 때는 modleAndView를 불러오지 않기 때문에 필요가 없는 기능이다.
-//    @Override
-//    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-//        log.info("postHandle [{}]", modelAndView);
-//    }
-
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         String requestURI = request.getRequestURI();

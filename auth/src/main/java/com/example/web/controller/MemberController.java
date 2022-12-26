@@ -18,11 +18,14 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/members")
 public class MemberController {
 
-    private final String AUTHORIZATION = "Authorization";
+    private static final String MEMBER_ID = "memberId";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String REFRESH_TOKEN = "refresh_token";
+    private static final String HOME_PATH = "/";
     private final MemberService memberService;
 
     @GetMapping("/{memberId}")
-    public ApiResponse<ApiResponse.withData> memberInfo(@PathVariable("memberId") Long memberId) {
+    public ApiResponse<ApiResponse.withData> memberInfo(@PathVariable(MEMBER_ID) Long memberId) {
         MemberInfoDTO memberInfoDTO = memberService.memberInfo(memberId);
         return ApiResponseGenerator.success(memberInfoDTO, HttpStatus.OK, 1100, "memberInfo");
     }
@@ -36,21 +39,22 @@ public class MemberController {
     @PostMapping("/login")
     public void login(@Validated MemberLoginDTO memberLoginDTO, HttpServletResponse response) {
         TokenDTO tokenDTO = memberService.login(memberLoginDTO);
-        response.setHeader(AUTHORIZATION, tokenDTO.getAuthorizationToken());
-        response.setHeader("Access-Control-Expose-Headers", AUTHORIZATION);
+        // todo 다른 도메인간 headers 전송 여부 공부
+        response.setHeader(AUTHORIZATION_HEADER, tokenDTO.getAuthorizationToken());
+        response.setHeader("Access-Control-Expose-Headers", AUTHORIZATION_HEADER);
         response.addCookie(tokenDTO.getTokenCookie());
     }
 
     @PostMapping("/logout")
-    public void logout(@CookieValue("refresh_token") String token, HttpServletResponse response) {
+    public void logout(@CookieValue(REFRESH_TOKEN) String token, HttpServletResponse response) {
         memberService.logout(token);
         removeCookieToken(response);
     }
 
     private static void removeCookieToken(HttpServletResponse response) {
-        Cookie refreshToken = new Cookie("refresh_token", null);
+        Cookie refreshToken = new Cookie(REFRESH_TOKEN, null);
         refreshToken.setMaxAge(0);
-        refreshToken.setPath("/");
+        refreshToken.setPath(HOME_PATH);
         response.addCookie(refreshToken);
     }
 
