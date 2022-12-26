@@ -4,6 +4,8 @@ import com.example.domain.group.Group;
 import com.example.domain.group.GroupRepository;
 import com.example.domain.group.GroupService;
 import com.example.web.dto.GroupDTO;
+import com.example.web.exception.GroupValidateError;
+import com.example.web.exception.GroupValidateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,56 +50,40 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void deleteGroup(Long groupId, Long ownerId) {
-        Optional<Group> groupById = repository.findById(groupId);
-        if (groupById.isEmpty()) {
-            throw new IllegalStateException("no group");
-        }
-        Group group = groupById.get();
-        if (!group.isOwner(ownerId)) {
-            throw new IllegalStateException("you are not owner");
-        }
+        validateGroupAndOwner(groupId, ownerId);
         repository.deleteById(groupId);
     }
 
     @Override
     @Transactional
     public void modifyGroupName(Long groupId, Long ownerId, String groupName) {
-        Optional<Group> groupById = repository.findById(groupId);
-        if (groupById.isEmpty()) {
-            throw new IllegalStateException("no group");
-        }
-        Group group = groupById.get();
-        if (!group.isOwner(ownerId)) {
-            throw new IllegalStateException("you are not owner");
-        }
+        Group group = validateGroupAndOwner(groupId, ownerId);
         group.modifyGroupName(groupName);
     }
 
     @Override
     @Transactional
     public void modifyGroupMaxMember(Long groupId, Long ownerId, Integer maxMember) {
-        Optional<Group> groupById = repository.findById(groupId);
-        if (groupById.isEmpty()) {
-            throw new IllegalStateException("no group");
-        }
-        Group group = groupById.get();
-        if (!group.isOwner(ownerId)) {
-            throw new IllegalStateException("you are not owner");
-        }
+        Group group = validateGroupAndOwner(groupId, ownerId);
         group.modifyGroupMaxMember(maxMember);
     }
 
     @Override
     @Transactional
     public void modifyGroupOwner(Long groupId, Long ownerId, Long newOwnerId) {
+        Group group = validateGroupAndOwner(groupId, ownerId);
+        group.modifyGroupOwner(newOwnerId);
+    }
+
+    private Group validateGroupAndOwner(Long groupId, Long ownerId) {
         Optional<Group> groupById = repository.findById(groupId);
         if (groupById.isEmpty()) {
-            throw new IllegalStateException("no group");
+            throw new GroupValidateException(GroupValidateError.NO_SUCH_GROUP);
         }
         Group group = groupById.get();
         if (!group.isOwner(ownerId)) {
-            throw new IllegalStateException("not owner");
+            throw new GroupValidateException(GroupValidateError.NOT_OWNER);
         }
-        group.modifyGroupOwner(newOwnerId);
+        return group;
     }
 }
