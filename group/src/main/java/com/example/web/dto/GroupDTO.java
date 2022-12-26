@@ -9,6 +9,9 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class GroupDTO {
+
+    private Long groupId;
+
     private String groupName;
 
     private Integer maxMember;

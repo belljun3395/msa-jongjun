@@ -9,12 +9,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/groups")
 public class GroupController {
 
     private final GroupService service;
+
+    @GetMapping
+    public ApiResponse<ApiResponse.withData> allGroup() {
+        List<GroupDTO> allGroups = service.browseGroups();
+        return ApiResponseGenerator.success(allGroups, HttpStatus.OK, 1300, "all groups");
+    }
+
+    @GetMapping("/{ownerId}")
+    public ApiResponse<ApiResponse.withData> ownerGroups(@PathVariable("ownerId") Long ownerId) {
+        List<GroupDTO> allGroups = service.browseOwnerGroups(ownerId);
+        return ApiResponseGenerator.success(allGroups, HttpStatus.OK, 1300, "owners all group");
+    }
 
     @PostMapping("/admin")
     public ApiResponse<ApiResponse.withCodeAndMessage> makeGroup(GroupDTO groupDTO) {
