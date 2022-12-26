@@ -14,12 +14,10 @@ spring:
     discovery:
       enabled: false
   datasource:
-#    schema:
-#      - classpath:/member-schema.sql
-#      - classpath:/login-log-schema.sql
-#    data:
-#      - classpath:/member-data.sql
-#    initialization-mode: always
+    schema:
+      - classpath:/group-table-schema.sql
+      - classpath:/group-table-member-schema.sql
+    initialization-mode: always
     #    mySQL setting
 #    url: jdbc:mysql://127.0.0.1:3306/msa_jongjun_group?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
     url: jdbc:log4jdbc:mysql://127.0.0.1:3306/msa_jongjun_group?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
@@ -29,8 +27,7 @@ spring:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
   jpa:
     hibernate:
-#      ddl-auto: none
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
 #        show_sql: true

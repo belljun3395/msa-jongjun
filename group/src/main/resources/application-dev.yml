@@ -15,10 +15,8 @@ spring:
       enabled: true # for eureka
   datasource:
 #    schema:
-#      - classpath:/member-schema.sql
-#      - classpath:/login-log-schema.sql
-#    data:
-#      - classpath:/member-data.sql
+#      - classpath:/group-table-schema.sql
+#      - classpath:/group-table-member-schema.sql
 #    initialization-mode: always
     url: jdbc:log4jdbc:h2:tcp://localhost/~/msa_jongjun_group;MODE=MYSQL
 #    url: jdbc:h2:tcp://localhost/~/msa_jongjun_group;MODE=MYSQL
