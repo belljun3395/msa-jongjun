@@ -1,6 +1,7 @@
 package com.example.domain.groupMember;
 
 import com.example.domain.group.Group;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

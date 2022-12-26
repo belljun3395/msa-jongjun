@@ -1,16 +1,16 @@
 package com.example.web.controller;
 
 import com.example.domain.groupMember.GroupMemberService;
+import com.example.web.dto.GroupDTO;
 import com.example.web.dto.GroupMemberInfoDTO;
 import com.example.web.dto.GroupOwnerInfoDTO;
 import com.example.web.response.ApiResponse;
 import com.example.web.response.ApiResponseGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/groups/members")
@@ -18,6 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupMemberController {
 
     private final GroupMemberService service;
+
+    @GetMapping("/{memberId}")
+    public ApiResponse<ApiResponse.withData> browseGroupByMember(@PathVariable("memberId") Long memberId) {
+        List<GroupDTO> groups = service.browseGroup(memberId);
+        return ApiResponseGenerator.success(groups, HttpStatus.OK, 1300, "member's group");
+    }
 
     @PostMapping
     public ApiResponse<ApiResponse.withCodeAndMessage> participateGroup(GroupMemberInfoDTO groupMemberInfoDTO) {
