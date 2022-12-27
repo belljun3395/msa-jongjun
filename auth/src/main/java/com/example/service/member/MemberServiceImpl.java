@@ -77,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
         return new TokenDTO(memberLoginInfo.getAccessToken(), memberLoginInfo.getRefreshToken());
     }
 
-    private static MemberLoginInfo makeMemberLoginInfo(Member member, MemberLoginDTO memberLoginDTO) {
+    private MemberLoginInfo makeMemberLoginInfo(Member member, MemberLoginDTO memberLoginDTO) {
         return MemberLoginInfo.builder()
                 .memberId(member.getId())
                 .role(member.getRole())
