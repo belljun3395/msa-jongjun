@@ -2,6 +2,7 @@ package com.example.web.controller;
 
 import com.example.domain.token.accessToken.AccessToken;
 import com.example.domain.token.accessToken.AccessTokenService;
+import com.example.utils.token.JwtToken;
 import com.example.web.dto.MemberInfoDTO;
 import com.example.web.response.ApiResponse;
 import com.example.web.response.ApiResponseGenerator;
@@ -41,7 +42,7 @@ public class TokenController {
 
     @GetMapping("/validation")
     public boolean validateAccessToken(@RequestHeader(AUTHORIZATION_HEADER) String accessTokenValue) {
-        return service.validateAccessToken(accessTokenValue);
+        return JwtToken.validateToken(accessTokenValue);
     }
 
     @GetMapping("/validation/role/{role}")
