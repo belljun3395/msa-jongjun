@@ -45,7 +45,7 @@ public boolean shouldFilter() {
     return true;
 }
 ```
-로그를 남기기 전에 로그인 요청을 제외한 다른 요청들에 대해서는 accessToken을 확인하는 먼저 `shouldFilter`를 먼저 지나간다.
+로그를 남기기 전에 로그인 요청을 제외한 다른 요청들에 대해서는 accessToken을 확인하는 먼저 `shouldFilter`를 먼저 지나갑니다.
 ```java
 @Override
 public Object run() throws ZuulException {
@@ -58,11 +58,11 @@ public Object run() throws ZuulException {
     return null;
 }
 ```
-이후 `run`을 통해 위와 같이 로그를 남겨준다.
+이후 `run`을 통해 위와 같이 로그를 남겨줍니다.
 
-`ZuulPostLogginFilter`의 `run` 역시 위와 같이 구성한다.
+`ZuulPostLogginFilter`의 `run` 역시 위와 같이 구성합니다.
 
-토큰 유효성 확인의 경우 다음과 같이 진행한다.
+토큰 유효성 확인의 경우 다음과 같이 진행합니다.
 ```java
 @FeignClient(value = "auth", fallbackFactory = FeignValidateAccessTokenFallbackFactory.class)
 public interface FeignValidateAccessToken {
@@ -304,7 +304,7 @@ public String emailAuth(MemberAuthInfoDTO memberAuthInfoDTO) {
 }
 ```
 
-이는 email 인증을 위해 uuid와 key와 함께 email 서버에 auth email을 보내달라는 요청을 kafka를 통해 하는 코드입니다.
+이는 email 인증을 위해 uuid와 key와 함께 email 서버에 auth email을 보내달라는 요청을 kafka를 통해 전달하는 코드입니다.
 
 ---
 `Question 5`
