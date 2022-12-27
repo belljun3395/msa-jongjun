@@ -12,8 +12,6 @@ public interface AccessTokenService {
 
     AccessToken makeAccessToken(String refreshToken);
 
-    boolean validateAccessToken(String accessTokenValue);
-
     boolean validateAccessTokenRole(String accessTokenValue, String role);
 
 }
