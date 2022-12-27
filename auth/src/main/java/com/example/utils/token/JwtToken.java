@@ -1,36 +1,25 @@
 package com.example.utils.token;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import io.lettuce.core.RedisException;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class JwtToken {
 
-    private static final String SIGN_KEY_VALUE = "iskeyhavetolongidontknowaboutthis";
-    private static final Key SIGN_KEY = Keys.hmacShaKeyFor(SIGN_KEY_VALUE.getBytes(StandardCharsets.UTF_8));
-    private static final String UUID_KEY = "uuid";
-    private static String HEADER_TYPE = "JWT";
-    private static String HEADER_ALG = "HS256";
-    private static String TOKEN_ISSUER = "auth app";
-
-    private static Long ONE_DAY = 24 * 60 * 60 * 1000L;
-
-
     public static String makeToken(Long expiryDate, Map<String, Object> claims) {
 
-        Map<String, Object> jwtHeader = setHeader(HEADER_TYPE, HEADER_ALG);
+        Map<String, Object> jwtHeader = setHeader(JwtTokenConfig.HEADER_TYPE, JwtTokenConfig.HEADER_ALG);
 
         return Jwts.builder()
-                .signWith(SIGN_KEY,SignatureAlgorithm.HS256)
+                .signWith(JwtTokenConfig.getSIGN_KEY(),SignatureAlgorithm.HS256)
                 .setHeader(jwtHeader)
                 .setClaims(claims)
-                .setIssuer(TOKEN_ISSUER)
+                .setIssuer(JwtTokenConfig.TOKEN_ISSUER)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(expiryDate))
                 .compact();
@@ -43,10 +32,44 @@ public class JwtToken {
         return jwtHeader;
     }
 
-    public static boolean validateExpirationTime(String token) {
+    public static boolean validateToken(String tokenValue) {
+        try {
+            validateJwts(tokenValue);
+            return true;
+        } catch (JwtException | RedisException e) {
+            return false;
+        }
+    }
+
+    private static void validateJwts(String token) {
+        Jwts.parserBuilder()
+                .setSigningKey(JwtTokenConfig.getSIGN_KEY())
+                .build()
+                .parseClaimsJws(token);
+    }
+
+    public static boolean refreshExpirationTime(String token) {
         Long expirationTime = getExpirationTime(token);
+        Long issuedAtTime = getIssuedAtTime(token);
+        if (isAccessToken(expirationTime, issuedAtTime)) {
+            if (refreshTokenExpirationTime(token, expirationTime, TokenConfig.TWENTY_MIN)) {
+                return true;
+            }
+            return false;
+        }
+        if (refreshTokenExpirationTime(token, expirationTime, TokenConfig.ONE_DAY)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isAccessToken(Long expirationTime, Long issuedAtTime) {
+        return (expirationTime - issuedAtTime) == TokenConfig.TWENTY_MIN;
+    }
+
+    private static boolean refreshTokenExpirationTime(String token, Long expirationTime, Long compareTime) {
         long now = System.currentTimeMillis();
-        if (expirationTime - now < ONE_DAY) {
+        if (expirationTime - now < compareTime) {
             expirationRefresh(token, now);
             return true;
         }
@@ -55,7 +78,7 @@ public class JwtToken {
 
     private static Long getExpirationTime(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(SIGN_KEY)
+                .setSigningKey(JwtTokenConfig.getSIGN_KEY())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -63,27 +86,37 @@ public class JwtToken {
                 .getTime();
     }
 
-    private static void expirationRefresh(String token, long now) {
-        Jwts.parserBuilder()
-                .setSigningKey(SIGN_KEY)
+    private static Long getIssuedAtTime(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(JwtTokenConfig.getSIGN_KEY())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .setExpiration(new Date(now + ONE_DAY));
+                .getIssuedAt()
+                .getTime();
+    }
+
+    private static void expirationRefresh(String token, long now) {
+        Jwts.parserBuilder()
+                .setSigningKey(JwtTokenConfig.getSIGN_KEY())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .setExpiration(new Date(now + TokenConfig.ONE_DAY));
     }
 
     public static String getUUID(String token) {
         return String.valueOf(Jwts.parserBuilder()
-                .setSigningKey(SIGN_KEY)
+                .setSigningKey(JwtTokenConfig.getSIGN_KEY())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get(UUID_KEY));
+                .get(TokenConfig.UUID_KEY));
     }
 
     public static String decodeToken(String token, String key) {
         return String.valueOf(Jwts.parserBuilder()
-                .setSigningKey(SIGN_KEY)
+                .setSigningKey(JwtTokenConfig.getSIGN_KEY())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
