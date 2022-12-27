@@ -23,7 +23,7 @@
 + kafka
 
 ## 아키텍처
-![스마일게이트 인증서버 drawio](https://user-images.githubusercontent.com/102807742/209357135-82b73f83-5ed5-47c7-a9d2-970c94d86224.png)
+![스마일게이트 인증서버 drawio](https://user-images.githubusercontent.com/102807742/209655234-84934755-489b-4b7a-96e5-5c175c63364c.png)
 
 ## 주요 구현 및 질문
 ### zuul
