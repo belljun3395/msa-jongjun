@@ -9,11 +9,6 @@ window.onload = async function () {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         credentials: 'include',
-    }).then(res => {
-        if (!res.ok) {
-            alert("다시 로그인 해주세요");
-            location.href = "/login";
-        }
     });
 
     let accessTokenInfo = await accessToken.json();
