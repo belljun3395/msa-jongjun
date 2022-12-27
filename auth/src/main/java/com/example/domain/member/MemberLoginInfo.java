@@ -9,17 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.example.utils.token.TokenConfig.*;
+
 @Getter
 public class MemberLoginInfo {
-
-    private final Long ONE_DAY = 24 * 60 * 60 * 1000L;
-    private final Long TWENTY_MIN = 20 * 60L * 1000L;
-
-    private final String MEMBER_ID = "memberId";
-    private final String ROLE = "role";
-
-    private final String UUID_KEY = "uuid";
-
     private Long memberId;
 
     private Role role;
@@ -51,6 +44,7 @@ public class MemberLoginInfo {
         long ACCESS_TOKEN_EXP = System.currentTimeMillis() + TWENTY_MIN;
         return JwtToken.makeToken(ACCESS_TOKEN_EXP, this.makeUUID());
     }
+
     private String makeRefreshToken() {
         long REFRESH_TOKEN_EXP = System.currentTimeMillis() + ONE_DAY;
         return JwtToken.makeToken(REFRESH_TOKEN_EXP, this.makeTokenInfo());
@@ -58,8 +52,8 @@ public class MemberLoginInfo {
 
     private Map<String, Object> makeTokenInfo() {
         Map<String, Object> tokenInfo = new HashMap<>();
-        tokenInfo.put(MEMBER_ID, memberId);
-        tokenInfo.put(ROLE, role);
+        tokenInfo.put(MEMBERID_KEY, memberId);
+        tokenInfo.put(ROLE_KEY, role);
         return tokenInfo;
     }
 

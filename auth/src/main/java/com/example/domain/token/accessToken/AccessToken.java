@@ -2,6 +2,7 @@ package com.example.domain.token.accessToken;
 
 import com.example.domain.member.Role;
 import com.example.utils.token.JwtToken;
+import com.example.utils.token.TokenConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,7 @@ public class AccessToken  {
         this.accessTokenValue = accessTokenValue;
         this.memberId = memberId;
         this.role = role;
-        this.expiredTime = 20 * 60L * 1000L;
+        this.expiredTime = TokenConfig.TWENTY_MIN;
     }
 }
 
