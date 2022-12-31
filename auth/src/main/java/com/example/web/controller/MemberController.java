@@ -2,6 +2,8 @@ package com.example.web.controller;
 
 import com.example.domain.member.MemberService;
 import com.example.domain.member.Role;
+import com.example.utils.token.JwtToken;
+import com.example.utils.token.TokenConfig;
 import com.example.web.dto.*;
 import com.example.web.response.ApiResponse;
 import com.example.web.response.ApiResponseGenerator;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +26,8 @@ public class MemberController {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String REFRESH_TOKEN = "refresh_token";
     private static final String HOME_PATH = "/";
+    private static final String ROLE_VALUE = "roleValue";
+    private static final String COOKIE_NAME = "refresh_token";
     private final MemberService memberService;
 
     @GetMapping("/{memberId}")
@@ -71,5 +77,31 @@ public class MemberController {
     @PostMapping("/email/key")
     public boolean validateKey(AuthKeyInfoDTO authKeyInfoDTO) {
         return memberService.validateAuthKey(authKeyInfoDTO);
+    }
+
+    @PostMapping("/role/cookie")
+    public void adjustCookie(@CookieValue String refresh_token, String roleValue, HttpServletResponse response) {
+        String newRefreshToken = makeNewToken(refresh_token, roleValue);
+        Cookie newCookie = makeNewCookie(newRefreshToken);
+        response.addCookie(newCookie);
+    }
+
+    private static String makeNewToken(String refresh_token, String roleValue) {
+        String memberId = JwtToken.decodeToken(refresh_token, TokenConfig.MEMBERID_KEY);
+        Long expirationTime = JwtToken.getExpirationTime(refresh_token);
+
+        Map<String, Object> newMemberInfo = new HashMap<>();
+        newMemberInfo.put(TokenConfig.MEMBERID_KEY, memberId);
+        newMemberInfo.put(TokenConfig.ROLE_KEY, Role.makeRole(roleValue));
+
+        return JwtToken.makeToken(expirationTime, newMemberInfo);
+    }
+
+    private static Cookie makeNewCookie(String newRefreshToken) {
+        Cookie cookie = new Cookie(COOKIE_NAME, newRefreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath(HOME_PATH);
+        return cookie;
     }
 }
