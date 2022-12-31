@@ -94,7 +94,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
             throw new TokenValidateException(TokenValidateError.NO_TOKEN_LOG);
         }
         AccessToken accessToken = tokenById.get();
-        return role == accessToken.getRole()
-                .getType();
+        return role.equals(accessToken.getRole()
+                .getType());
     }
 }
