@@ -41,7 +41,7 @@ public class Group {
     }
 
     public boolean isOwner(Long id) {
-        return ownerId == id;
+        return ownerId.equals(id);
     }
 
     public boolean isMax(Integer memberCount) {
