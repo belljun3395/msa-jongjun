@@ -8,6 +8,11 @@ window.onload = async function () {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         credentials: 'include',
+    }).then(res => {
+        if (!res.ok) {
+            alert("error");
+        }
+        return res;
     });
 
 

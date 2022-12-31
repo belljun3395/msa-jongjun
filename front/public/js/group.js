@@ -27,6 +27,7 @@ window.onload = async function () {
         if (!res.ok) {
             alert("error");
         }
+        return res;
     });
 
     let allGroupsInfo = await allGroups.json();
