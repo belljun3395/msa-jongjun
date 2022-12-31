@@ -112,6 +112,18 @@ window.onload = async function () {
                     credentials: 'include',
                     body: new URLSearchParams({memberId: memberId, role: "admin"}),
                 });
+
+                await fetch('http://localhost:8765/auth/members/role/cookie', {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': accessTokenValue,
+                    },
+                    credentials: 'include',
+                    body: new URLSearchParams({roleValue: "admin"}),
+                });
+
                 location.href = '/mypage';
             } else {
                 alert("인증실패");
