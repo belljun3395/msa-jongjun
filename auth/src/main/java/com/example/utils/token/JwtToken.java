@@ -76,7 +76,7 @@ public class JwtToken {
         return false;
     }
 
-    private static Long getExpirationTime(String token) {
+    public static Long getExpirationTime(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(JwtTokenConfig.getSIGN_KEY())
                 .build()
