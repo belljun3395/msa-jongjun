@@ -18,13 +18,6 @@ spring:
       - classpath:/group-table-schema.sql
       - classpath:/group-table-member-schema.sql
     initialization-mode: always
-    #    mySQL setting
-    #    url: jdbc:mysql://127.0.0.1:3306/msa_jongjun_group?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/msa_jongjun_group?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-    username: root
-    password: root@1234
-    #    driver-class-name: com.mysql.cj.jdbc.Driver
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
   jpa:
     hibernate:
       ddl-auto: none
@@ -37,13 +30,6 @@ group:
   ribbon:
     MaxAutoRetries: 0
     MaxAutoRetriesNextServer: 1
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    service-url:
-      defaultZone: http://127.0.0.1:8761/eureka  # default address
 
 logging.level:
   org.hibernate.SQL: debug
