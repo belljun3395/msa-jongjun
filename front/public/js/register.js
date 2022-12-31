@@ -34,7 +34,7 @@ async function getRegister(event) {
         alert(response.message);
         location.href = '/register';
     } else {
-        location.href = "/";
+        location.href = "/login";
     }
 
 }
