@@ -63,8 +63,52 @@ window.onload = async function () {
     document.querySelector(".resume-section-content")
         .append(memberElement);
 
+    let groupInfo = await fetch('http://localhost:8765/group/groups/' + memberId, {
+        method: 'GET',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': accessTokenValue,
+        },
+        credentials: 'include',
+    });
+    let group = await groupInfo.json();
 
-    let adjustRoleElement = document.querySelector("#adjustRole");
+    for (let i = 0; i < group.data.length; i++) {
+        let groupElement = document.createElement("a");
+        groupElement.innerHTML =
+            `<h3 className="mb-0" id = "group">`
+            + group.data[i].groupName + `
+                    <span className="text-primary">`
+            + await getName(group.data[i].ownerId) + `
+                    </span>`
+            + `<input type="hidden" id="groupIdV" value="${group.data[i].groupId}"/>`
+            + `<input type="button" id="groupId" value="delete"> </h3>`;
+        document.querySelector(".resume-section-content")
+            .append(groupElement);
+    }
+    let elementNodeListOf = document.querySelectorAll("#groupId");
+    for (let i = 0; i < elementNodeListOf.length; i++) {
+        elementNodeListOf[i].onclick = () => {
+            groupDelete(i);
+        };
+    }
+    async function groupDelete(i) {
+        let elementNodeListOf = document.querySelectorAll("#groupIdV");
+        let groupId = elementNodeListOf[i].value;
+        await fetch('http://localhost:8765/group/groups/admin', {
+            method: 'DELETE',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': accessTokenValue,
+            },
+            credentials: 'include',
+            body: new URLSearchParams({groupId: groupId, ownerId: memberId}),
+        }).then(() => {
+            location.href = "/mypage";
+        });
+    }    let adjustRoleElement = document.querySelector("#adjustRole");
 
     adjustRoleElement.addEventListener("click", makeInputKey, {once: true});
 
@@ -131,55 +175,6 @@ window.onload = async function () {
         }
     }
 
-
-    let groupInfo = await fetch('http://localhost:8765/group/groups/' + memberId, {
-        method: 'GET',
-        cache: 'no-cache',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': accessTokenValue,
-        },
-        credentials: 'include',
-    });
-    let group = await groupInfo.json();
-
-    for (let i = 0; i < group.data.length; i++) {
-        let groupElement = document.createElement("a");
-        groupElement.innerHTML =
-            `<h3 className="mb-0" id = "group">`
-            + group.data[i].groupName + `
-                    <span className="text-primary">`
-            + await getName(group.data[i].ownerId) + `
-                    </span>`
-            + `<input type="hidden" id="groupIdV" value="${group.data[i].groupId}"/>`
-            + `<input type="button" id="groupId" value="delete"> </h3>`;
-        document.querySelector(".resume-section-content")
-            .append(groupElement);
-    }
-
-
-    let elementNodeListOf = document.querySelectorAll("#groupId");
-    for (let i = 0; i < elementNodeListOf.length; i++) {
-        elementNodeListOf[i].onclick = () => {
-            groupDelete(i);
-        };
-    }
-    async function groupDelete(i) {
-        let elementNodeListOf = document.querySelectorAll("#groupIdV");
-        let groupId = elementNodeListOf[i].value;
-        await fetch('http://localhost:8765/group/groups/admin', {
-            method: 'DELETE',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': accessTokenValue,
-            },
-            credentials: 'include',
-            body: new URLSearchParams({groupId: groupId, memberId: memberId}),
-        }).then(() => {
-            location.href = "/group";
-        });
-    }
 };
 
 async function getName(memberId) {
