@@ -8,6 +8,14 @@ server:
 spring:
   application:
     name: email
+  zipkin:
+    base-url: http://localhost:9411
+  sleuth:
+    messaging:
+      kafka:
+        enabled: false
+    sampler:
+      probability: 1.0
   kafka:
     bootstrap-servers: localhost:9093
     consumer:
@@ -30,3 +38,15 @@ mail:
 AdminMail:
   id: belljun3395@gmail.com
   password: apglaiqjxnlqxste
+
+email:
+  ribbon:
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 1
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka  # default address
