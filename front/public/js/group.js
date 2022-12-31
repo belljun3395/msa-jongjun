@@ -81,6 +81,7 @@ window.onload = async function () {
             cache: 'no-cache',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': accessTokenValue,
             },
             credentials: 'include',
             body: new URLSearchParams({groupId: groupId, memberId: memberId}),
