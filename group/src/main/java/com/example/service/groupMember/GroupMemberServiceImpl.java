@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,9 +34,6 @@ public class GroupMemberServiceImpl implements GroupMemberService {
             // todo lazyLoading 확인
             Group group = gm.getGroup();
             groups.add(new GroupDTO(group.getId(), group.getGroupName(), group.getMaxMember(), group.getOwnerId()));
-        }
-        if (groups.size() == 0) {
-            throw new GroupMemberValidateException(GroupMemberValidateError.NO_PARTICIPATE_GROUP);
         }
         return groups;
     }
