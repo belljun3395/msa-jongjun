@@ -17,36 +17,11 @@ spring:
     sampler:
       probability: 1.0
   kafka:
-    bootstrap-servers: localhost:9093
     consumer:
       group-id: auth
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-
-mail:
-  smtp:
-    port: 465
-    auth: true
-    starttls:
-      required: true
-      enable: true
-    socketFactory:
-#      class: javax.net.ssl.SSLSocketFactory
-      fallback: false
-      port: 465
-
-# admin 구글 계정
-AdminMail:
-  id: belljun3395@gmail.com
-  password: apglaiqjxnlqxste
 
 email:
   ribbon:
     MaxAutoRetries: 0
     MaxAutoRetriesNextServer: 1
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    service-url:
-      defaultZone: http://127.0.0.1:8761/eureka  # default address
