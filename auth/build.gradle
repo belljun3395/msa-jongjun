@@ -28,6 +28,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-ribbon:2.1.6.RELEASE'  // 2. To use ribbon
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix:2.1.6.RELEASE' // 1. To use spring-cloud-hystrix
     implementation 'org.springframework.boot:spring-boot-starter-web:2.1.18.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config:2.1.9.RELEASE'
 
     implementation 'org.springframework.kafka:spring-kafka:2.2.15.RELEASE'
 

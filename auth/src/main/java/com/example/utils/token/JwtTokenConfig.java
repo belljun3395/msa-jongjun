@@ -3,7 +3,6 @@ package com.example.utils.token;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -12,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 
 @Getter
 @Component
-@PropertySource("classpath:jwt.properties")
 public class JwtTokenConfig {
 
     public static String HEADER_TYPE;

@@ -2,13 +2,11 @@ package com.example.utils.token;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 
 @Getter
 @Component
-@PropertySource("classpath:token.properties")
 public class TokenConfig {
 
     public static Long ONE_DAY;

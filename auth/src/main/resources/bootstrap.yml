@@ -1,0 +1,15 @@
+server:
+  port: 8081
+  servlet:
+    session:
+      tracking-modes: cookie
+      timeout: 1800
+
+spring:
+  application:
+    name: auth
+  profiles:
+    active: default ,token, jwt
+  cloud:
+    config:
+      uri: http://localhost:8071
