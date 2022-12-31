@@ -23,4 +23,6 @@ jar {
 
 dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server:2.1.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-sleuth:2.0.0.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.0.0.RELEASE'
 }
