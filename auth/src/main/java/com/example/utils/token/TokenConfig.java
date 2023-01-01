@@ -8,34 +8,15 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 public class TokenConfig {
-
-    public static Long ONE_DAY;
     @Value("${token.oneDay}")
-    public void setONE_DAY(Long ONE_DAY) {
-        TokenConfig.ONE_DAY = ONE_DAY;
-    }
+    private Long oneDay;
 
-    public static Long TWENTY_MIN;
     @Value("${token.twentyMin}")
-    public void setTWENTY_MIN(Long TWENTY_MIN) {
-        TokenConfig.TWENTY_MIN = TWENTY_MIN;
-    }
+    private Long twentyMin;
 
-    public static String UUID_KEY;
-    @Value("${token.key.uuid}")
-    public void setTWENTY_MIN(String UUID) {
-        TokenConfig.UUID_KEY = UUID;
-    }
-
-    public static String MEMBERID_KEY;
     @Value("${token.key.memberId}")
-    public void setMEMBERID_KEY(String MEMBERID_KEY) {
-        TokenConfig.MEMBERID_KEY = MEMBERID_KEY;
-    }
+    private String memberIdKey;
 
-    public static String ROLE_KEY;
     @Value("${token.key.role}")
-    public void setROLE_KEY_KEY(String ROLE_KEY) {
-        TokenConfig.ROLE_KEY = ROLE_KEY;
-    }
+    private String roleKey;
 }
