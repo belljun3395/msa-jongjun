@@ -1,7 +1,7 @@
 package com.example.filter;
 
-import com.example.exception.NotValidateTokenExceptionCustom;
-import com.example.token.FeignValidateAccessToken;
+import com.example.token.FeignRenewalToken;
+import com.example.token.TokenConsumer;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -19,7 +19,9 @@ public class ZuulPreLoggingFilter extends ZuulFilter {
 
     private final String AUTHORIZATION_HEADER = "Authorization";
 
-    private final FeignValidateAccessToken token;
+    private final TokenConsumer tokenConsumer;
+
+    private final FeignRenewalToken token;
 
     @Override
     public Object run() throws ZuulException {
@@ -47,13 +49,18 @@ public class ZuulPreLoggingFilter extends ZuulFilter {
         RequestContext context = RequestContext.getCurrentContext();
         HttpServletRequest request = context.getRequest();
         String uri = request.getRequestURI();
-        if (uri.matches("/auth/members/.*") || uri.matches("/auth/tokens/.*")) {
+        if (uri.matches("/auth/members") ||
+            uri.matches("/auth/members/join") ||
+            uri.matches("/auth/members/login") ||
+            uri.matches("/auth/members/logout") ||
+            uri.matches("/auth/members/token/renewal")
+            ) {
             return true;
         }
 
         String accessToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (!token.validateAccessToken(accessToken)) {
-            throw new NotValidateTokenExceptionCustom();
+        if (!tokenConsumer.validateToken(accessToken)) {
+            request.setAttribute("Authorization", token.getNewToken());;
         }
         return true;
     }
