@@ -1,27 +1,2 @@
-server:
-  port: 8086
-  servlet:
-    session:
-      tracking-modes: cookie
-      timeout: 1800
-
-spring:
-  application:
-    name: email
-  zipkin:
-    base-url: http://localhost:9411
-  sleuth:
-    messaging:
-      kafka:
-        enabled: false
-    sampler:
-      probability: 1.0
-  kafka:
-    consumer:
-      group-id: auth
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-
-email:
-  ribbon:
-    MaxAutoRetries: 0
-    MaxAutoRetriesNextServer: 1
+logging.level:
+  org.hibernate.SQL: debug
