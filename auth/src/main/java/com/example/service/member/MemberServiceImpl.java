@@ -4,6 +4,8 @@ import com.example.domain.authMemberInfo.AuthMemberInfo;
 import com.example.domain.authMemberInfo.AuthMemberInfoRepository;
 import com.example.domain.member.MemberLoginInfo;
 import com.example.domain.member.*;
+import com.example.utils.token.TokenConfig;
+import com.example.utils.token.TokenProvider;
 import com.example.web.dto.*;
 import com.example.web.exception.MemberValidateException;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import static com.example.web.exception.MemberValidateError.*;
 
@@ -29,6 +30,10 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository repository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final TokenConfig tokenConfig;
+
+    private final TokenProvider tokenProvider;
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -74,7 +79,9 @@ public class MemberServiceImpl implements MemberService {
         MemberLoginInfo memberLoginInfo = makeMemberLoginInfo(member, memberLoginDTO);
         applicationEventPublisher.publishEvent(new MemberLoginEvent(memberLoginInfo));
 
-        return new TokenDTO(memberLoginInfo.getAccessToken(), memberLoginInfo.getRefreshToken());
+        String accessToken = getAccessToken(member.getId(), member.getRole());
+        String refreshToken = getRefreshToken(member.getId(), member.getRole());
+        return new TokenDTO(accessToken, refreshToken);
     }
 
     private MemberLoginInfo makeMemberLoginInfo(Member member, MemberLoginDTO memberLoginDTO) {
@@ -84,6 +91,27 @@ public class MemberServiceImpl implements MemberService {
                 .clientType(memberLoginDTO.getClientType())
                 .location(memberLoginDTO.getLocation())
                 .build();
+    }
+
+    private String getAccessToken(Long memberId, Role role) {
+        Map<String, Object> memberClaims = getMemberClaims(memberId, role);
+
+        long now = System.currentTimeMillis();
+        return tokenProvider.getToken(now + tokenConfig.getTwentyMin(), memberClaims);
+    }
+
+    private String getRefreshToken(Long memberId, Role role) {
+        Map<String, Object> memberClaims = getMemberClaims(memberId, role);
+
+        long now = System.currentTimeMillis();
+        return tokenProvider.getToken(now + tokenConfig.getOneDay(), memberClaims);
+    }
+
+    private Map<String, Object> getMemberClaims(Long memberId, Role role) {
+        Map<String, Object> memberClaims = new HashMap<>();
+        memberClaims.put(tokenConfig.getMemberIdKey(), memberId);
+        memberClaims.put(tokenConfig.getRoleKey(), role);
+        return memberClaims;
     }
 
     private Member findMemberBy(String email) {
@@ -207,6 +235,6 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberValidateException(NO_EXIST_MEMBER);
         }
         Member member = memberById.get();
-        return new MemberInfoDTO(member.getEmail(), member.getName(), member.getRole());
+        return new MemberInfoDTO(member.getId(), member.getEmail(), member.getName(), member.getRole());
     }
 }
