@@ -39,7 +39,6 @@ public class ZuulPreRoleFilter extends ZuulFilter {
         String accessToken = request.getHeader(AUTHORIZATION_HEADER);
         if (uri.contains("admin")) {
             context.set("role", "admin");
-            System.out.println("token.validateAccessTokenRole(accessToken, \"admin\") = " + token.validateAccessTokenRole(accessToken, "admin"));
             if (!token.validateAccessTokenRole(accessToken, "admin")) {
                 throw new NotAllowedAPIExceptionCustom();
             }
