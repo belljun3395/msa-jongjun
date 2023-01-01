@@ -1,7 +1,7 @@
 package com.example.filter;
 
 import com.example.exception.NotAllowedAPIExceptionCustom;
-import com.example.token.FeignValidateAccessToken;
+import com.example.token.TokenConsumer;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class ZuulPreRoleFilter extends ZuulFilter {
     private final String AUTHORIZATION_HEADER = "Authorization";
-    private final FeignValidateAccessToken token;
+    private final TokenConsumer tokenConsumer;
 
     @Override
     public Object run() throws ZuulException {
@@ -36,10 +36,9 @@ public class ZuulPreRoleFilter extends ZuulFilter {
         RequestContext context = RequestContext.getCurrentContext();
         HttpServletRequest request = context.getRequest();
         String uri = request.getRequestURI();
-        String accessToken = request.getHeader(AUTHORIZATION_HEADER);
+        String token = request.getHeader(AUTHORIZATION_HEADER);
         if (uri.contains("admin")) {
-            context.set("role", "admin");
-            if (!token.validateAccessTokenRole(accessToken, "admin")) {
+            if (!tokenConsumer.getPayloadClaim(token, "ROLE").equals("ADMIN")) {
                 throw new NotAllowedAPIExceptionCustom();
             }
             return true;
