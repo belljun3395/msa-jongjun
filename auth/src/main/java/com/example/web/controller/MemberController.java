@@ -2,8 +2,9 @@ package com.example.web.controller;
 
 import com.example.domain.member.MemberService;
 import com.example.domain.member.Role;
-import com.example.utils.token.JwtToken;
 import com.example.utils.token.TokenConfig;
+import com.example.utils.token.TokenConsumer;
+import com.example.utils.token.TokenProvider;
 import com.example.web.dto.*;
 import com.example.web.response.ApiResponse;
 import com.example.web.response.ApiResponseGenerator;
@@ -21,16 +22,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberController {
-
-    private static final String MEMBER_ID = "memberId";
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String REFRESH_TOKEN = "refresh_token";
-    private static final String HOME_PATH = "/";
     private static final String COOKIE_NAME = "refresh_token";
+    private static final String HOME_PATH = "/";
+
+    private final TokenConsumer tokenConsumer;
+    private final TokenProvider tokenProvider;
+    private final TokenConfig tokenConfig;
     private final MemberService memberService;
 
-    @GetMapping("/{memberId}")
-    public ApiResponse<ApiResponse.withData> memberInfo(@PathVariable(MEMBER_ID) Long memberId) {
+    @GetMapping
+    public ApiResponse<ApiResponse.withData> memberInfo(@RequestHeader("Authorization") String token) {
+        Long memberId = Long.valueOf(tokenConsumer.getPayloadClaim(token, tokenConfig.getMemberIdKey()));
         MemberInfoDTO memberInfoDTO = memberService.memberInfo(memberId);
         return ApiResponseGenerator.success(memberInfoDTO, HttpStatus.OK, 1100, "memberInfo");
     }
@@ -45,22 +47,39 @@ public class MemberController {
     public void login(@Validated MemberLoginDTO memberLoginDTO, HttpServletResponse response) {
         TokenDTO tokenDTO = memberService.login(memberLoginDTO);
         // todo 다른 도메인간 headers 전송 여부 공부
-        response.setHeader(AUTHORIZATION_HEADER, tokenDTO.getAuthorizationToken());
-        response.setHeader("Access-Control-Expose-Headers", AUTHORIZATION_HEADER);
+        response.setHeader("Authorization", tokenDTO.getAuthorizationToken());
+        response.setHeader("Access-Control-Expose-Headers", "Authorization");
         response.addCookie(tokenDTO.getTokenCookie());
     }
 
     @PostMapping("/logout")
-    public void logout(@CookieValue(REFRESH_TOKEN) String token, HttpServletResponse response) {
+    public void logout(@CookieValue(COOKIE_NAME) String token, HttpServletResponse response) {
         memberService.logout(token);
         removeCookieToken(response);
     }
 
-    private static void removeCookieToken(HttpServletResponse response) {
-        Cookie refreshToken = new Cookie(REFRESH_TOKEN, null);
+    private void removeCookieToken(HttpServletResponse response) {
+        Cookie refreshToken = new Cookie(COOKIE_NAME, null);
         refreshToken.setMaxAge(0);
         refreshToken.setPath(HOME_PATH);
         response.addCookie(refreshToken);
+    }
+
+    @GetMapping("/token/renewal")
+    public String renewalToken(@CookieValue(COOKIE_NAME) String token, HttpServletResponse response) {
+        Long memberId = Long.valueOf(tokenConsumer.getPayloadClaim(token, tokenConfig.getMemberIdKey()));
+        Role role = Role.makeRole(tokenConsumer.getPayloadClaim(token, tokenConfig.getRoleKey()));
+        Map<String, Object> memberClaims = getMemberClaims(memberId, role);
+        
+        long now = System.currentTimeMillis();
+        return tokenProvider.getToken(now + tokenConfig.getTwentyMin(), memberClaims);
+    }
+
+    private Map<String, Object> getMemberClaims(Long memberId, Role role) {
+        Map<String, Object> memberClaims = new HashMap<>();
+        memberClaims.put(tokenConfig.getMemberIdKey(), memberId);
+        memberClaims.put(tokenConfig.getRoleKey(), role);
+        return memberClaims;
     }
 
     @PostMapping("/role")
@@ -85,23 +104,23 @@ public class MemberController {
         response.addCookie(newCookie);
     }
 
-    private static String makeToken(String refresh_token, String roleValue) {
-        String memberId = JwtToken.decodeToken(refresh_token, TokenConfig.MEMBERID_KEY);
-        Long expirationTime = JwtToken.getExpirationTime(refresh_token);
+    private String makeToken(String refresh_token, String roleValue) {
+        String memberId = tokenConsumer.getPayloadClaim(refresh_token, tokenConfig.getMemberIdKey());
+        Long expirationTime = tokenConsumer.getExpirationTime(refresh_token);
 
         Map<String, Object> newMemberInfo = makeNewMemberInfo(roleValue, memberId);
 
-        return JwtToken.makeToken(expirationTime, newMemberInfo);
+        return tokenProvider.getToken(expirationTime, newMemberInfo);
     }
 
-    private static Map<String, Object> makeNewMemberInfo(String roleValue, String memberId) {
+    private Map<String, Object> makeNewMemberInfo(String roleValue, String memberId) {
         Map<String, Object> newMemberInfo = new HashMap<>();
-        newMemberInfo.put(TokenConfig.MEMBERID_KEY, memberId);
-        newMemberInfo.put(TokenConfig.ROLE_KEY, Role.makeRole(roleValue));
+        newMemberInfo.put(tokenConfig.getMemberIdKey(), memberId);
+        newMemberInfo.put(tokenConfig.getRoleKey(), Role.makeRole(roleValue));
         return newMemberInfo;
     }
 
-    private static Cookie makeCookieToken(String newRefreshToken) {
+    private Cookie makeCookieToken(String newRefreshToken) {
         Cookie cookie = new Cookie(COOKIE_NAME, newRefreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
