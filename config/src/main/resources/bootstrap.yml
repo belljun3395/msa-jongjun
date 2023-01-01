@@ -2,13 +2,16 @@ spring:
   application:
     name: config-server
   profiles:
-    active: native
+    active: native, git
   cloud:
     config:
       server:
         native:
           search-locations: classpath:/config
-
+        git:
+          uri: https://github.com/belljun3395/msa-jongjun
+          default-label: main
+          search-paths: config/src/main/resources/config
 server:
   port: 8071
 
