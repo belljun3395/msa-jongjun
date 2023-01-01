@@ -2,18 +2,21 @@ let accessTokenValue;
 
 window.onload = async function () {
 
-    let accessToken = await fetch('http://localhost:8765/auth/tokens/access', {
+    let accessToken = await fetch('http://localhost:8765/auth/members/token/renewal', {
         method: 'GET',
         cache: 'no-cache',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         credentials: 'include',
+    }).then(res => {
+        if (!res.ok) {
+            alert("error");
+        }
+        return res;
     });
 
-    let accessTokenInfo = await accessToken.json();
-    let memberId = accessTokenInfo.memberId;
-    accessTokenValue = accessTokenInfo.accessTokenValue;
+    accessTokenValue = await accessToken.text();
 
     let allGroups = await fetch('http://localhost:8765/group/groups', {
         method: 'GET',
@@ -46,7 +49,7 @@ window.onload = async function () {
             .append(groupElement);
     }
 
-    let memberInfo = await fetch('http://localhost:8765/auth/members/' + memberId, {
+    let memberInfo = await fetch('http://localhost:8765/auth/members/', {
         method: 'GET',
         cache: 'no-cache',
         headers: {
@@ -58,6 +61,7 @@ window.onload = async function () {
 
     member = await memberInfo.json();
     let name = member.data.name;
+    memberId = member.data.memberId;
 
     let nameElement = document.createElement("a");
     nameElement.innerHTML = `<a class="nav-link js-scroll-trigger" id="name" href="/user">` + name + `</a>`;
@@ -76,7 +80,7 @@ window.onload = async function () {
     async function groupJoin(i) {
         let elementNodeListOf = document.querySelectorAll("#groupIdV");
         let groupId = elementNodeListOf[i].value;
-        await fetch('http://localhost:8765/group/groups/members', {
+        await fetch('http://localhost:8765/group/groups/members' + memberId, {
             method: 'POST',
             cache: 'no-cache',
             headers: {
@@ -92,8 +96,8 @@ window.onload = async function () {
 };
 
 
-async function getName(memberId) {
-    let memberInfo = await fetch('http://localhost:8765/auth/members/' + memberId, {
+async function getName() {
+    let memberInfo = await fetch('http://localhost:8765/auth/members/', {
         method: 'GET',
         cache: 'no-cache',
         headers: {

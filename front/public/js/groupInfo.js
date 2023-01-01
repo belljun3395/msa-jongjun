@@ -3,7 +3,7 @@ let accessTokenValue;
 
 window.onload = async function () {
 
-    let accessToken = await fetch('http://localhost:8765/auth/tokens/access', {
+    let accessToken = await fetch('http://localhost:8765/auth/members/token/renewal', {
         method: 'GET',
         cache: 'no-cache',
         headers: {
@@ -17,12 +17,9 @@ window.onload = async function () {
         return res;
     });
 
+    accessTokenValue = await accessToken.text();
 
-    let accessTokenInfo = await accessToken.json();
-    memberId = accessTokenInfo.memberId;
-    accessTokenValue = accessTokenInfo.accessTokenValue;
-
-    let memberInfo = await fetch('http://localhost:8765/auth/members/' + memberId, {
+    let memberInfo = await fetch('http://localhost:8765/auth/members/', {
         method: 'GET',
         cache: 'no-cache',
         headers: {
@@ -33,6 +30,7 @@ window.onload = async function () {
     });
     member = await memberInfo.json();
     let name = member.data.name;
+    memberId = member.data.memberId;
 
     let nameElement = document.createElement("a");
     nameElement.innerHTML = `<a class="nav-link js-scroll-trigger" id="name" href="/user">` + name + `</a>`;
