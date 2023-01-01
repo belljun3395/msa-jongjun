@@ -26,7 +26,6 @@ public class MemberController {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String REFRESH_TOKEN = "refresh_token";
     private static final String HOME_PATH = "/";
-    private static final String ROLE_VALUE = "roleValue";
     private static final String COOKIE_NAME = "refresh_token";
     private final MemberService memberService;
 
@@ -81,23 +80,28 @@ public class MemberController {
 
     @PostMapping("/role/cookie")
     public void adjustCookie(@CookieValue String refresh_token, String roleValue, HttpServletResponse response) {
-        String newRefreshToken = makeNewToken(refresh_token, roleValue);
-        Cookie newCookie = makeNewCookie(newRefreshToken);
+        String newRefreshToken = makeToken(refresh_token, roleValue);
+        Cookie newCookie = makeCookieToken(newRefreshToken);
         response.addCookie(newCookie);
     }
 
-    private static String makeNewToken(String refresh_token, String roleValue) {
+    private static String makeToken(String refresh_token, String roleValue) {
         String memberId = JwtToken.decodeToken(refresh_token, TokenConfig.MEMBERID_KEY);
         Long expirationTime = JwtToken.getExpirationTime(refresh_token);
 
-        Map<String, Object> newMemberInfo = new HashMap<>();
-        newMemberInfo.put(TokenConfig.MEMBERID_KEY, memberId);
-        newMemberInfo.put(TokenConfig.ROLE_KEY, Role.makeRole(roleValue));
+        Map<String, Object> newMemberInfo = makeNewMemberInfo(roleValue, memberId);
 
         return JwtToken.makeToken(expirationTime, newMemberInfo);
     }
 
-    private static Cookie makeNewCookie(String newRefreshToken) {
+    private static Map<String, Object> makeNewMemberInfo(String roleValue, String memberId) {
+        Map<String, Object> newMemberInfo = new HashMap<>();
+        newMemberInfo.put(TokenConfig.MEMBERID_KEY, memberId);
+        newMemberInfo.put(TokenConfig.ROLE_KEY, Role.makeRole(roleValue));
+        return newMemberInfo;
+    }
+
+    private static Cookie makeCookieToken(String newRefreshToken) {
         Cookie cookie = new Cookie(COOKIE_NAME, newRefreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
