@@ -1,9 +1,7 @@
-package com.example.domain.login;
+package com.example.domain.loginlog;
 
 import com.example.domain.member.MemberLoginEvent;
 import com.example.domain.member.MemberLoginInfo;
-import com.example.domain.token.accessToken.AccessToken;
-import com.example.domain.token.accessToken.AccessTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberLoginEventHandler {
 
     private final LoginLogRepository repository;
-    private final AccessTokenRepository accessTokenRepository;
 
     @Async
     @EventListener
@@ -25,11 +22,6 @@ public class MemberLoginEventHandler {
         MemberLoginInfo memberLoginInfo = event.getMemberLoginInfo();
         // todo 동시 로그인 문제 해결
         repository.save(loginLogFrom(memberLoginInfo));
-        accessTokenRepository.save(accessTokenFrom(memberLoginInfo));
-    }
-
-    private AccessToken accessTokenFrom(MemberLoginInfo memberLoginInfo) {
-        return new AccessToken(memberLoginInfo.getAccessToken(), memberLoginInfo.getMemberId(), memberLoginInfo.getRole());
     }
 
     private LoginLog loginLogFrom(MemberLoginInfo memberLoginInfo) {
@@ -38,7 +30,6 @@ public class MemberLoginEventHandler {
                 .role(memberLoginInfo.getRole())
                 .clientType(memberLoginInfo.getClientType())
                 .location(memberLoginInfo.getLocation())
-                .refreshToken(memberLoginInfo.getRefreshToken())
                 .build();
     }
 }

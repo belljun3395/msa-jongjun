@@ -1,4 +1,4 @@
-package com.example.domain.login;
+package com.example.domain.loginlog;
 
 import com.example.domain.member.Role;
 import lombok.AccessLevel;
@@ -27,17 +27,14 @@ public class LoginLog {
 
     private String location;
 
-    private String refreshToken;
-
     private Timestamp timestamp;
 
     @Builder
-    public LoginLog(Long memberId, Role role, String clientType, String location, String refreshToken) {
+    public LoginLog(Long memberId, Role role, String clientType, String location) {
         this.memberId = memberId;
         this.role = role;
         this.clientType = clientType;
         this.location = location;
-        this.refreshToken = refreshToken;
         this.timestamp = new Timestamp(System.currentTimeMillis());
     }
 
