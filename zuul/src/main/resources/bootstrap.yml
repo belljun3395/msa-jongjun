@@ -1,6 +1,18 @@
+server:
+  port: 8765
+  servlet:
+    session:
+      tracking-modes: cookie
+      timeout: 1800
+
 spring:
   application:
     name: zuul
+  profiles:
+    active: jwt
+  cloud:
+    config:
+      uri: http://localhost:8071
   redis:
     host: localhost
     port: 6379
@@ -9,9 +21,6 @@ spring:
   sleuth:
     sampler:
       probability: 1.0
-
-server:
-  port: 8765
 
 zuul:
   SendErrorFilter:
